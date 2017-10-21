@@ -11,8 +11,10 @@ const styles = StyleSheet.create({
 
 export default class Warning extends React.Component {
   render() {
-    return <View style={styles.container}>
-      <Text>{this.props.msg}</Text>
-    </View>
+    return (
+      <View style={[styles.container, this.props.customStyles]}>
+        <Text>{this.props.msg}</Text>
+      </View>
+    )
   }
 }

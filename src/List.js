@@ -1,10 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
-import styles from './styles'
-
-const css = StyleSheet.create({
-  container: styles.container,
-})
+import Header from './Header'
 
 export default class List extends React.Component {
   render() {
@@ -13,12 +9,15 @@ export default class List extends React.Component {
       acc.push(item)
       return acc
     },[])
-    return <View style={css.container}>
-      <FlatList
-        data={data}
-        renderItem={this.print}
-      />
-    </View>
+    return (
+      <View>
+        <Header></Header>
+        <FlatList
+          data={data}
+          renderItem={this.print}
+        />
+      </View>
+    )
   }
 
   print({item}) {
