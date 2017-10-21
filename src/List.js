@@ -9,7 +9,7 @@ export default class List extends React.Component {
   }
 
   openAddress(address) {
-    console.log(`open address ${$address}`)
+    console.log(`open address ${address}`)
   }
 
   render() {
@@ -29,17 +29,19 @@ export default class List extends React.Component {
   print({item}) {
     const defaultImg = require('../assets/img/eth.png')
     return (
-      <View style={style.listElem}>
+      <View>
         <TouchableHighlight key="refresh" underlayColor='transparent'
-          onPress={this.openAddress.bind(this, item.address)}>
+          onPress={this.openAddress.bind(this, item.key)}>
+          <View style={style.listElem}>
             <Image
               style={style.listImg}
               source={item.img || defaultImg}>
             </Image>
+            <Text style={style.listItemText}>
+              {item.key} - $ {item.balance}
+            </Text>
+          </View>
        </TouchableHighlight>
-       <Text style={style.listItemText}>
-         {item.address} - $ {item.amount}
-       </Text>
       </View>
     )
   }
@@ -61,14 +63,14 @@ const style = StyleSheet.create({
     justifyContent: 'center'
   },
   listHeaderText: {
-    fontSize: 20
+    fontSize: 18
   },
   listImg: {
     width: 32,
     height: 32
   },
   listItemText: {
-    fontSize: 18,
+    fontSize: 14,
     paddingLeft: 5,
     paddingTop: 3
   }
