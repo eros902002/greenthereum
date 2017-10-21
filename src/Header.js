@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native'
 
 const style = StyleSheet.create({
   header: {
@@ -14,10 +14,20 @@ const style = StyleSheet.create({
 })
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props)
+    this.navigation = this.props.screenProps.rootNavigation
+  }
+  onPressHeader() {
+    console.log('Header pressed')
+    this.navigation.navigate('Home')
+  }
   render() {
     return (
       <View style={style.header}>
-        <Text style={style.headerText}>Greenthereum</Text>
+        <TouchableHighlight underlayColor='transparent' onPress={this.onPressHeader.bind(this)}>
+          <Text style={style.headerText}>Greenthereum</Text>
+        </TouchableHighlight>
       </View>
     )
   }
