@@ -24,7 +24,8 @@ export default {
     MIN_REQUEST_TIME
   },
   URL: {
-    PRICE_HISTORICAL: 'https://etherscan.io/chart/etherprice'
+    PRICE_HISTORICAL: 'https://etherscan.io/chart/etherprice',
+    ADDRESS_INFO: 'https://etherscan.io/address/'
   },
   getAccounts,
   getStats

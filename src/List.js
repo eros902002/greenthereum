@@ -6,10 +6,12 @@ import {
   ScrollView,
   Image,
   FlatList,
-  TouchableHighlight
+  TouchableHighlight,
+  Linking
 } from 'react-native'
-import appStyles from './styles'
 import Units from 'ethereumjs-units'
+import API from './api'
+import appStyles from './styles'
 
 export default class List extends React.Component {
   constructor(props) {
@@ -19,6 +21,8 @@ export default class List extends React.Component {
 
   openAddress(address) {
     console.log(`open address ${address}`)
+    Linking.openURL(`${API.URL.ADDRESS_INFO}${address}`)
+      .catch(err => console.error('An error occurred', err))
   }
 
   render() {
