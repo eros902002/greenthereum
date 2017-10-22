@@ -1,6 +1,6 @@
 const HOST = 'https://api.etherscan.io/api'
 const API_KEY = 'TIMRV1B6YVN8TCR719MRWG68F5UW1TSSBC'
-const MIN_REQUEST_TIME = 1000
+const MIN_REQUEST_TIME = 1500
 
 function getAccounts(accounts) {
   const addresses = accounts ? JSON.parse(accounts) : []

@@ -10,6 +10,7 @@ import {
 import List from './List'
 import Welcome from './Welcome'
 import Header from './Header'
+import ActivityIndicatorLayer from './ActivityIndicatorLayer'
 import {STG_ADDRESSES} from './constants'
 import API from './api'
 import appStyles from './styles'
@@ -20,10 +21,14 @@ export default class Main extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      accounts: []
+      accounts: [],
+      loading: true
     }
     this.navigation = this.props.navigation
-    this.refresh = debounce(this.refresh.bind(this), API.const.MIN_REQUEST_TIME)
+    this.refresh = debounce(this.refresh.bind(this), API.const.MIN_REQUEST_TIME, {
+      'leading': true,
+      'trailing': false
+    })
   }
 
   componentDidMount() {
@@ -46,7 +51,8 @@ export default class Main extends React.Component {
           }
         })
         this.setState({
-          accounts: items
+          accounts: items,
+          loading: false
         })
       })
       .catch((error) => {
@@ -73,6 +79,9 @@ export default class Main extends React.Component {
 
   refresh() {
     console.log('refresh()')
+    this.setState({
+      loading: true
+    })
     this.getAccounts()
   }
 
@@ -114,7 +123,11 @@ getMenu() {
         <View style={styles.actions}>
           {this.getMenu()}
         </View>
-        {content}
+        {
+          this.state.loading ?
+            <ActivityIndicatorLayer animating={true}></ActivityIndicatorLayer> :
+            content
+        }
       </View>
     )
   }

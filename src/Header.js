@@ -20,7 +20,7 @@ export default class Header extends React.Component {
   }
   onPressHeader() {
     console.log('Header pressed')
-    this.navigation.navigate('Home')
+    this.navigation.goBack()
   }
   render() {
     return (
