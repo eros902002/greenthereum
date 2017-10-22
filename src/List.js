@@ -89,7 +89,7 @@ const style = StyleSheet.create({
     justifyContent: 'center'
   },
   listHeaderText: {
-    fontSize: 18
+    fontSize: 16
   },
   listImg: {
     width: 32,
