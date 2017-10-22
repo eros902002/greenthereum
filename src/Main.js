@@ -10,6 +10,7 @@ import {
 import List from './List'
 import Welcome from './Welcome'
 import Header from './Header'
+import Footer from './Footer'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
 import {STG_ADDRESSES} from './constants'
 import API from './api'
@@ -128,6 +129,7 @@ getMenu() {
             <ActivityIndicatorLayer animating={true}></ActivityIndicatorLayer> :
             content
         }
+        <Footer screenProps={screenProps}></Footer>
       </View>
     )
   }
@@ -141,8 +143,8 @@ const styles = StyleSheet.create({
     padding: 20
   },
   actionBtn: {
-    width: 64,
-    height: 64
+    width: 48,
+    height: 48
   },
   refresh: {
 

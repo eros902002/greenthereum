@@ -1,5 +1,13 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  FlatList,
+  TouchableHighlight
+} from 'react-native'
 import appStyles from './styles'
 import Units from 'ethereumjs-units'
 
@@ -19,10 +27,12 @@ export default class List extends React.Component {
         <View style={style.listHeader}>
           <Text style={style.listHeaderText}>Contracts Overview</Text>
         </View>
-        <FlatList
-          data={this.props.items}
-          renderItem={this.print.bind(this)}
-        />
+        <ScrollView>
+          <FlatList
+            data={this.props.items}
+            renderItem={this.print.bind(this)}
+          />
+        </ScrollView>
       </View>
     )
   }
@@ -31,7 +41,7 @@ export default class List extends React.Component {
     const defaultImg = require('../assets/img/eth.png')
     return (
       <View>
-        <TouchableHighlight key="refresh" underlayColor='transparent'
+        <TouchableHighlight underlayColor='transparent'
           onPress={this.openAddress.bind(this, item.key)}>
           <View style={style.listElem}>
             <Image
@@ -42,7 +52,7 @@ export default class List extends React.Component {
               {getShortAddress(item.key)}
             </Text>
             <Text style={style.listItemText}>
-              {getBalance(item.balance)} ETH
+              <Text style={style.bold}>{getBalance(item.balance)}</Text> ETH
             </Text>
           </View>
        </TouchableHighlight>
@@ -85,5 +95,8 @@ const style = StyleSheet.create({
     fontSize: 14,
     paddingLeft: 5,
     paddingTop: 3
+  },
+  bold: {
+    fontWeight: 'bold'
   }
 })

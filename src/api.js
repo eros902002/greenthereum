@@ -1,5 +1,6 @@
 const HOST = 'https://api.etherscan.io/api'
 const API_KEY = 'TIMRV1B6YVN8TCR719MRWG68F5UW1TSSBC'
+const STATS_URL = `${HOST}?module=stats&action=ethprice&apikey=${API_KEY}`
 const MIN_REQUEST_TIME = 1500
 
 function getAccounts(accounts) {
@@ -14,9 +15,17 @@ function getAccounts(accounts) {
   return Promise.resolve([])
 }
 
+function getStats() {
+  return fetch(STATS_URL)
+}
+
 export default {
   const: {
     MIN_REQUEST_TIME
   },
-  getAccounts
+  URL: {
+    PRICE_HISTORICAL: 'https://etherscan.io/chart/etherprice'
+  },
+  getAccounts,
+  getStats
 }
