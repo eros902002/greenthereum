@@ -1,5 +1,15 @@
 {
   "expo": {
-    "sdkVersion": "21.0.0"
+    "name": "Greenthereum",
+    "icon": "./assets/img/eth.png",
+    "version": "0.1.0",
+    "slug": "greenthereum",
+    "sdkVersion": "21.0.0",
+    "ios": {
+      "bundleIdentifier": "com.juliomatcom.Greenthereum"
+    },
+    "android": {
+      "package": "com.juliomatcom.Greenthereum"
+    }
   }
 }

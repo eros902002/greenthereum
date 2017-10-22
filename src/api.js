@@ -12,7 +12,7 @@ function getAccounts(accounts) {
     console.log(`fetch ${BALANCE_URL}`)
     return fetch(BALANCE_URL)
   }
-  return Promise.resolve([])
+  return Promise.reject('no addresses found')
 }
 
 function getStats() {

@@ -57,7 +57,11 @@ export default class Main extends React.Component {
         })
       })
       .catch((error) => {
-        console.error(error)
+        console.log(error)
+        this.setState({
+          accounts: [],
+          loading: false
+        })
       })
   }
 
