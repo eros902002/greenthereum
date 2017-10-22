@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight } from 'react-native'
 import appStyles from './styles'
+import Units from 'ethereumjs-units'
 
 export default class List extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ export default class List extends React.Component {
     return (
       <View style={[appStyles.container, style.listContainer]}>
         <View style={style.listHeader}>
-          <Text style={style.listHeaderText}>Address</Text>
+          <Text style={style.listHeaderText}>Contracts Overview</Text>
         </View>
         <FlatList
           data={this.props.items}
@@ -35,16 +36,27 @@ export default class List extends React.Component {
           <View style={style.listElem}>
             <Image
               style={style.listImg}
-              source={item.img || defaultImg}>
+              source={defaultImg}>
             </Image>
             <Text style={style.listItemText}>
-              {item.key} - $ {item.balance}
+              {getShortAddress(item.key)}
+            </Text>
+            <Text style={style.listItemText}>
+              {getBalance(item.balance)} ETH
             </Text>
           </View>
        </TouchableHighlight>
       </View>
     )
   }
+}
+
+function getShortAddress(address) {
+  return `${address.substr(0, 3)}...${address.substr(-7)}`
+}
+
+function getBalance(balance) {
+  return Units.convert(balance, 'wei', 'eth')
 }
 
 const style = StyleSheet.create({
@@ -56,7 +68,7 @@ const style = StyleSheet.create({
   listElem: {
     paddingTop: 10,
     flexDirection: 'row',
-    'justifyContent': 'flex-start'
+    'justifyContent': 'space-between'
   },
   listHeader: {
     alignItems: 'center',

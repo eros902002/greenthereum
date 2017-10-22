@@ -37,7 +37,7 @@ export default class Main extends React.Component {
         console.log(accounts)
         const items = accounts.map((account) => {
           return {
-            key: account.account.substr(-5),
+            key: account.account,
             balance: account.balance
           }
         })
