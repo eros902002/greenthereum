@@ -1,17 +1,25 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native'
+import { Image, StyleSheet, Text, View, TouchableHighlight } from 'react-native'
 
 const style = StyleSheet.create({
   header: {
+    flexDirection: 'row',
     backgroundColor: '#e9ffe5',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  headerImg: {
+    width: 32,
+    height: 32
+  },
   headerText: {
-    padding: 26,
+    paddingLeft: 5,
+    paddingBottom: 26,
+    paddingTop: 26,
     fontSize: 18
   }
 })
+const defaultImg = require('../assets/img/ethgreen.png')
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -25,6 +33,10 @@ export default class Header extends React.Component {
   render() {
     return (
       <View style={style.header}>
+        <Image
+          style={style.headerImg}
+          source={defaultImg}>
+        </Image>
         <TouchableHighlight underlayColor='transparent' onPress={this.onPressHeader.bind(this)}>
           <Text style={style.headerText}>Greenthereum</Text>
         </TouchableHighlight>

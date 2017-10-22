@@ -42,7 +42,7 @@ export default class List extends React.Component {
   }
 
   print({item}) {
-    const defaultImg = require('../assets/img/eth.png')
+    const defaultImg = require('../assets/img/ethgreen.png')
     return (
       <View>
         <TouchableHighlight underlayColor='transparent'
