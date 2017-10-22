@@ -10,8 +10,11 @@ import {
 import List from './List'
 import Welcome from './Welcome'
 import Header from './Header'
-import {API_KEY, STG_ADDRESSES, HOST} from './constants'
+import {STG_ADDRESSES} from './constants'
+import API from './api'
 import appStyles from './styles'
+
+const debounce = require('lodash.debounce')
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -20,6 +23,7 @@ export default class Main extends React.Component {
       accounts: []
     }
     this.navigation = this.props.navigation
+    this.refresh = debounce(this.refresh.bind(this), API.const.MIN_REQUEST_TIME)
   }
 
   componentDidMount() {
@@ -28,9 +32,9 @@ export default class Main extends React.Component {
   }
 
   getAccounts() {
-    console.log('getItem', STG_ADDRESSES)
+    console.log(`getAccounts() in ${STG_ADDRESSES}`)
     AsyncStorage.getItem(STG_ADDRESSES)
-      .then(getAccountsAPI)
+      .then(API.getAccounts)
       .then((response) => response.json())
       .then((response) => response.result)
       .then((accounts) => {
@@ -60,14 +64,15 @@ export default class Main extends React.Component {
       })
   }
 
-  addAddressAction() {
-    console.log('Add pressed')
+  addAddress() {
+    console.log('addAddress()')
     this.navigation.navigate('Add', {
       Main: this
     })
   }
 
   refresh() {
+    console.log('refresh()')
     this.getAccounts()
   }
 
@@ -78,13 +83,13 @@ getMenu() {
 
   //Order matters for Layout
   menu.push((
-    <TouchableHighlight key="add" underlayColor='transparent' onPress={this.addAddressAction.bind(this)}>
+    <TouchableHighlight key="add" underlayColor='transparent' onPress={this.addAddress.bind(this)}>
       <Image style={styles.actionBtn} source={addButton}></Image>
    </TouchableHighlight>
   ))
   if (this.state.accounts.length) {
     menu.push((
-      <TouchableHighlight key="refresh" underlayColor='transparent' onPress={this.refresh.bind(this)}>
+      <TouchableHighlight key="refresh" underlayColor='transparent' onPress={this.refresh}>
         <Image
           style={[styles.actionBtn, styles.refresh]}
           source={refreshButton}>
@@ -113,18 +118,6 @@ getMenu() {
       </View>
     )
   }
-}
-
-function getAccountsAPI(value) {
-  console.log('=> ', value)
-  const addresses = value ? JSON.parse(value) : []
-  const addressJoined = addresses.join(',')
-  const BALANCE_URL = `${HOST}?module=account&action=balancemulti&tag=latest&apikey=${API_KEY}&address=${addressJoined}`
-  if (addresses.length) {
-    console.log(`fetch ${BALANCE_URL}`)
-    return fetch(BALANCE_URL)
-  }
-  return []
 }
 
 const styles = StyleSheet.create({
