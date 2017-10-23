@@ -25,10 +25,17 @@ export default class List extends React.Component {
   }
 
   render() {
+    const fromCache = this.props.screenProps.mainState.cached
     return (
       <View style={[appStyles.container, style.listContainer]}>
         <View style={style.listHeader}>
-          <Text style={style.listHeaderText}>Contracts Overview</Text>
+          <Text style={style.listHeaderText}>
+              Contracts Overview {
+                fromCache ?
+                  <Text style={style.listHeaderTextCache}> (cached) </Text> :
+                  ''
+              }
+          </Text>
         </View>
         <ScrollView>
           <FlatList
@@ -85,6 +92,9 @@ const style = StyleSheet.create({
   },
   listHeaderText: {
     fontSize: 16
+  },
+  listHeaderTextCache: {
+    fontSize: 12
   },
   listImg: {
     width: 32,

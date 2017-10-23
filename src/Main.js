@@ -13,7 +13,7 @@ import Welcome from './Welcome'
 import Header from './Header'
 import Footer from './Footer'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
-import {STG_ADDRESSES} from './constants'
+import {STG_ADDRESSES, STG_STATE} from './constants'
 import API from './api'
 import appStyles from './styles'
 
@@ -26,9 +26,10 @@ export default class Main extends React.Component {
       accounts: [],
       stats: {
         ethbtc: '-',
-        ethusd: '-',
-        date: null
+        ethusd: '-'
       },
+      cached: false,
+      date: null,
       loading: true
     }
     this.navigation = this.props.navigation
@@ -56,16 +57,32 @@ export default class Main extends React.Component {
         this.setState({
           stats: {
             ethbtc: result.ethbtc,
-            ethusd: result.ethusd,
-            date: new Date()
+            ethusd: result.ethusd
           }
         })
       })
       .then(this.getAccounts)
+      .catch((err) => { // load Backup
+        console.log('fetchData ERROR:', err)
+        AsyncStorage.getItem(STG_STATE)
+          .then(backup => JSON.parse(backup))
+          .then((backupState) => {
+            console.log(`using backup state from ${backupState.date}`)
+            backupState.loading = false
+            backupState.cached = true
+            this.setState(backupState)
+          })
+          .catch((err) => {
+            console.log('No backup found:', err)
+            this.setState({
+              loading: false
+            })
+          })
+      })
   }
   getAccounts() {
     console.log(`getAccounts() in ${STG_ADDRESSES}`)
-    AsyncStorage.getItem(STG_ADDRESSES)
+    return AsyncStorage.getItem(STG_ADDRESSES)
       .then(API.getAccounts)
       .then((response) => response.json())
       .then((response) => response.result)
@@ -82,17 +99,14 @@ export default class Main extends React.Component {
         })
         this.setState({
           accounts: items,
-          loading: false
+          loading: false,
+          date: new Date()
         })
         return items
       })
-      // .then(cacheItems)
-      .catch((error) => {
-        console.log(error)
-        this.setState({
-          accounts: [],
-          loading: false
-        })
+      .then((accounts) => {
+        console.log('update backup state:', JSON.stringify(this.state))
+        AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
       })
   }
 
