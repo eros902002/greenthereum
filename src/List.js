@@ -9,7 +9,6 @@ import {
   TouchableHighlight,
   Linking
 } from 'react-native'
-import Units from 'ethereumjs-units'
 import API from './api'
 import appStyles from './styles'
 
@@ -56,7 +55,8 @@ export default class List extends React.Component {
               {getShortAddress(item.key)}
             </Text>
             <Text style={style.listItemText}>
-              <Text style={style.bold}>{getBalance(item.balance)}</Text> ETH
+              <Text style={style.bold}>{item.balance}</Text> ETH {'≈'}
+              <Text style={style.bold}> {item.usd}</Text> USD
             </Text>
           </View>
        </TouchableHighlight>
@@ -66,11 +66,7 @@ export default class List extends React.Component {
 }
 
 function getShortAddress(address) {
-  return `${address.substr(0, 3)}...${address.substr(-7)}`
-}
-
-function getBalance(balance) {
-  return Units.convert(balance, 'wei', 'eth')
+  return `${address.substr(0, 3)}...${address.substr(-3)}`
 }
 
 const style = StyleSheet.create({
@@ -81,8 +77,7 @@ const style = StyleSheet.create({
   },
   listElem: {
     paddingTop: 10,
-    flexDirection: 'row',
-    'justifyContent': 'space-between'
+    flexDirection: 'row'
   },
   listHeader: {
     alignItems: 'center',

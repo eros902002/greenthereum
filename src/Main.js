@@ -7,6 +7,7 @@ import {
   Image,
   FlatList
 } from 'react-native'
+import Units from 'ethereumjs-units'
 import List from './List'
 import Welcome from './Welcome'
 import Header from './Header'
@@ -23,20 +24,45 @@ export default class Main extends React.Component {
     super(props)
     this.state = {
       accounts: [],
+      stats: {
+        ethbtc: '-',
+        ethusd: '-',
+        date: null
+      },
       loading: true
     }
     this.navigation = this.props.navigation
+    this.getAccounts = this.getAccounts.bind(this)
     this.refresh = debounce(this.refresh.bind(this), API.const.MIN_REQUEST_TIME, {
+      'leading': true,
+      'trailing': false
+    })
+    this.fetchData = debounce(this.fetchData.bind(this), API.const.MIN_REQUEST_TIME, {
       'leading': true,
       'trailing': false
     })
   }
 
   componentDidMount() {
-    // this.removeAddresses()
-    this.getAccounts()
+    this.fetchData()
   }
 
+  fetchData() {
+    console.log('getStats()')
+    API.getStats()
+      .then((response) => response.json())
+      .then((response) => response.result)
+      .then((result) => {
+        this.setState({
+          stats: {
+            ethbtc: result.ethbtc,
+            ethusd: result.ethusd,
+            date: new Date()
+          }
+        })
+      })
+      .then(this.getAccounts)
+  }
   getAccounts() {
     console.log(`getAccounts() in ${STG_ADDRESSES}`)
     AsyncStorage.getItem(STG_ADDRESSES)
@@ -46,16 +72,21 @@ export default class Main extends React.Component {
       .then((accounts) => {
         console.log(accounts)
         const items = accounts.map((account) => {
+          const balance = getBalance(account.balance)
+          const usdBalance = (balance * Number(this.state.stats.ethusd)).toFixed(2)
           return {
             key: account.account,
-            balance: account.balance
+            balance: balance,
+            usd: usdBalance
           }
         })
         this.setState({
           accounts: items,
           loading: false
         })
+        return items
       })
+      // .then(cacheItems)
       .catch((error) => {
         console.log(error)
         this.setState({
@@ -87,7 +118,7 @@ export default class Main extends React.Component {
     this.setState({
       loading: true
     })
-    this.getAccounts()
+    this.fetchData()
   }
 
 getMenu() {
@@ -116,7 +147,8 @@ getMenu() {
 
   render() {
     const screenProps = {
-      rootNavigation: this.navigation
+      rootNavigation: this.navigation,
+      mainState: this.state
     }
     const content = !this.state.accounts.length ?
       <Welcome screenProps={screenProps}></Welcome> :
@@ -137,6 +169,10 @@ getMenu() {
       </View>
     )
   }
+}
+
+function getBalance(balance) {
+  return Units.convert(balance, 'wei', 'eth')
 }
 
 const styles = StyleSheet.create({
