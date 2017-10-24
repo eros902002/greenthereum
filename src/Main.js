@@ -34,10 +34,7 @@ export default class Main extends React.Component {
     }
     this.navigation = this.props.navigation
     this.getAccounts = this.getAccounts.bind(this)
-    this.refresh = debounce(this.refresh.bind(this), API.const.MIN_REQUEST_TIME, {
-      'leading': true,
-      'trailing': false
-    })
+    this.refresh =this.refresh.bind(this)
     this.fetchData = debounce(this.fetchData.bind(this), API.const.MIN_REQUEST_TIME, {
       'leading': true,
       'trailing': false
@@ -50,63 +47,67 @@ export default class Main extends React.Component {
 
   fetchData() {
     console.log('getStats()')
-    API.getStats()
-      .then((response) => response.json())
-      .then((response) => response.result)
-      .then((result) => {
-        this.setState({
-          stats: {
-            ethbtc: result.ethbtc,
-            ethusd: result.ethusd
-          }
-        })
+    this.setState({
+      loading: true
+    })
+    Promise.all([API.getStats(), this.getAccounts()])
+      .then((responses) => {
+        return Promise.all([responses[0].json(), responses[1].json()])
       })
-      .then(this.getAccounts)
-      .catch((err) => { // load Backup
-        console.log('fetchData ERROR:', err)
-        AsyncStorage.getItem(STG_STATE)
-          .then(backup => JSON.parse(backup))
-          .then((backupState) => {
-            console.log(`using backup state from ${backupState.date}`)
-            backupState.loading = false
-            backupState.cached = true
-            this.setState(backupState)
-          })
-          .catch((err) => {
-            console.log('No backup found:', err)
-            this.setState({
-              loading: false
-            })
-          })
-      })
-  }
-  getAccounts() {
-    console.log(`getAccounts() in ${STG_ADDRESSES}`)
-    return AsyncStorage.getItem(STG_ADDRESSES)
-      .then(API.getAccounts)
-      .then((response) => response.json())
-      .then((response) => response.result)
-      .then((accounts) => {
-        console.log(accounts)
+      .then((jsons) => {
+        const stats = jsons[0].result
+        const accounts = jsons[1].result
+
         const items = accounts.map((account) => {
           const balance = getBalance(account.balance)
-          const usdBalance = (balance * Number(this.state.stats.ethusd)).toFixed(2)
+          const usdBalance = (balance * Number(stats.ethusd)).toFixed(2)
           return {
             key: account.account,
             balance: balance,
             usd: usdBalance
           }
         })
+
         this.setState({
           accounts: items,
           loading: false,
-          date: new Date()
+          date: new Date(),
+          stats: {
+            ethbtc: stats.ethbtc,
+            ethusd: stats.ethusd
+          }
         })
-        return items
-      })
-      .then((accounts) => {
         console.log('update backup state:', JSON.stringify(this.state))
         AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
+      })
+      .catch(this.loadBackup.bind(this))
+  }
+
+  getAccounts() {
+    console.log(`getAccounts() in ${STG_ADDRESSES}`)
+    return new Promise((resolve, reject) => {
+      AsyncStorage.getItem(STG_ADDRESSES)
+        .then(API.getAccounts)
+        .then(resolve)
+        .catch(reject)
+    })
+  }
+
+  loadBackup(err) { // load Backup
+    console.log('fetchData ERROR:', err)
+    AsyncStorage.getItem(STG_STATE)
+      .then(backup => JSON.parse(backup))
+      .then((backupState) => {
+        console.log(`using backup state from ${backupState.date}`)
+        backupState.loading = false
+        backupState.cached = true
+        this.setState(backupState)
+      })
+      .catch((err) => {
+        console.log('No backup found:', err)
+        this.setState({
+          loading: false
+        })
       })
   }
 
@@ -129,9 +130,6 @@ export default class Main extends React.Component {
 
   refresh() {
     console.log('refresh()')
-    this.setState({
-      loading: true
-    })
     this.fetchData()
   }
 
