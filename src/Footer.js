@@ -7,10 +7,11 @@ const style = StyleSheet.create({
     backgroundColor: '#c1efb8',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 64
   },
   footerText: {
     padding: 2,
-    fontSize: 12
+    fontSize: 14
   },
   bold: {
     fontWeight: 'bold'

@@ -20,7 +20,7 @@ export default class AddAddress extends React.Component {
 
   componentDidMount() {
     const { params } = this.props.navigation.state
-    this.MainComponent = params.Main
+    this.mainComponent = params.mainComponent
   }
 
   addAddress() {
@@ -39,7 +39,7 @@ export default class AddAddress extends React.Component {
       })
       .then(() => {
         console.log('address updated')
-        this.MainComponent.refresh()
+        this.mainComponent.refresh()
         this.navigation.goBack()
       })
   }

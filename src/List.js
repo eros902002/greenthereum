@@ -9,6 +9,7 @@ import {
   TouchableHighlight,
   Linking
 } from 'react-native'
+import QRCode from 'react-native-qrcode'
 import API from './api'
 import appStyles from './styles'
 
@@ -29,13 +30,11 @@ export default class List extends React.Component {
     return (
       <View style={[appStyles.container, style.listContainer]}>
         <View style={style.listHeader}>
-          <Text style={style.listHeaderText}>
-              Contracts Overview {
-                fromCache ?
-                  <Text style={style.listHeaderTextCache}> (cached) </Text> :
-                  ''
-              }
-          </Text>
+          {
+            fromCache ?
+            <Text style={style.listHeaderTextCache}> cached </Text> :
+            undefined
+          }
         </View>
         <ScrollView>
           <FlatList
@@ -50,58 +49,79 @@ export default class List extends React.Component {
   print({item}) {
     const defaultImg = require('../assets/img/ethgreen.png')
     return (
-      <View>
         <TouchableHighlight underlayColor='transparent'
           onPress={this.openAddress.bind(this, item.key)}>
-          <View style={style.listElem}>
-            <Image
-              style={style.listImg}
-              source={defaultImg}>
-            </Image>
-            <Text style={style.listItemText}>
-              {getShortAddress(item.key)}
-            </Text>
-            <Text style={style.listItemText}>
-              <Text style={style.bold}>{item.balance}</Text> ETH {'≈'}
-              <Text style={style.bold}> {item.usd}</Text> USD
-            </Text>
-          </View>
+          <View style={style.listRow}>
+            <View>
+              <QRCode
+                value={item.key}
+                size={64}
+                bgColor='black'
+                fgColor='white'/>
+            </View>
+            <View style={style.listColumn}>
+              <Text style={style.listAddress}>
+                {getShortAddress(item.key)}
+              </Text>
+              <Text style={style.listItemInfo}>
+                <Text style={style.bold}>{getBalanceText(item.balance)}</Text> ETH {'≈'}
+                <Text style={style.bold}> {item.usd}</Text> USD
+              </Text>
+            </View>
+        </View>
        </TouchableHighlight>
-      </View>
     )
   }
 }
 
-function getShortAddress(address) {
-  return `${address.substr(0, 3)}...${address.substr(-3)}`
+function getBalanceText(balance) {
+  const decimalPos = balance.indexOf('.')
+  const length = balance.length
+  const MAX_DECIMAL = 6
+  return decimalPos !== -1 ?
+    balance.substr(0, decimalPos + MAX_DECIMAL) :
+    balance
+}
+
+function getShortAddress(address) { // length >= 40
+  return `${address.substr(0, 10)}...${address.substr(-5)}`
 }
 
 const style = StyleSheet.create({
   listContainer: {
     flex: 1,
-    paddingLeft: 20,
-    paddingRight: 20
+    height: 64
   },
-  listElem: {
-    paddingTop: 10,
-    flexDirection: 'row'
+  listRow: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    padding: 10
+  },
+  listColumn: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   listHeader: {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  listHeaderText: {
-    fontSize: 16
-  },
   listHeaderTextCache: {
     fontSize: 12
   },
   listImg: {
-    width: 32,
-    height: 32
+    width: 64,
+    height: 64
   },
-  listItemText: {
-    fontSize: 14,
+  listAddress: {
+    fontSize: 18
+  },
+  listItemInfo: {
+    fontSize: 12,
     paddingLeft: 5,
     paddingTop: 3
   },

@@ -7,10 +7,12 @@ const style = StyleSheet.create({
     backgroundColor: '#e9ffe5',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 96,
+    paddingTop: 10
   },
   headerImg: {
-    width: 32,
-    height: 32
+    width: 48,
+    height: 48
   },
   headerText: {
     paddingLeft: 5,

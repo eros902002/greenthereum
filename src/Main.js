@@ -12,6 +12,7 @@ import List from './List'
 import Welcome from './Welcome'
 import Header from './Header'
 import Footer from './Footer'
+import BottomNav from './BottomNav'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
 import {STG_ADDRESSES, STG_STATE} from './constants'
 import API from './api'
@@ -53,11 +54,11 @@ export default class Main extends React.Component {
     Promise.all([API.getStats(), this.getAccounts()])
       .then((responses) => {
         return Promise.all([responses[0].json(), responses[1].json()])
+          // return Promise.all([{}.a()])
       })
       .then((jsons) => {
         const stats = jsons[0].result
         const accounts = jsons[1].result
-
         const items = accounts.map((account) => {
           const balance = getBalance(account.balance)
           const usdBalance = (balance * Number(stats.ethusd)).toFixed(2)
@@ -120,47 +121,15 @@ export default class Main extends React.Component {
         })
       })
   }
-
-  addAddress() {
-    console.log('addAddress()')
-    this.navigation.navigate('Add', {
-      Main: this
-    })
-  }
-
   refresh() {
     console.log('refresh()')
     this.fetchData()
   }
-
-getMenu() {
-  const menu = []
-  const refreshButton = require('../assets/img/refresh.png')
-  const addButton = require('../assets/img/plus.png')
-
-  //Order matters for Layout
-  menu.push((
-    <TouchableHighlight key="add" underlayColor='transparent' onPress={this.addAddress.bind(this)}>
-      <Image style={styles.actionBtn} source={addButton}></Image>
-   </TouchableHighlight>
-  ))
-  if (this.state.accounts.length) {
-    menu.push((
-      <TouchableHighlight key="refresh" underlayColor='transparent' onPress={this.refresh}>
-        <Image
-          style={[styles.actionBtn, styles.refresh]}
-          source={refreshButton}>
-        </Image>
-     </TouchableHighlight>
-    ))
-  }
-  return menu
-}
-
   render() {
     const screenProps = {
       rootNavigation: this.navigation,
-      mainState: this.state
+      mainState: this.state,
+      mainComponent: this
     }
     const content = !this.state.accounts.length ?
       <Welcome screenProps={screenProps}></Welcome> :
@@ -169,15 +138,13 @@ getMenu() {
     return (
       <View style={styles.container}>
         <Header screenProps={screenProps}></Header>
-        <View style={styles.actions}>
-          {this.getMenu()}
-        </View>
         {
           this.state.loading ?
             <ActivityIndicatorLayer animating={true}></ActivityIndicatorLayer> :
             content
         }
         <Footer screenProps={screenProps}></Footer>
+        <BottomNav screenProps={screenProps}></BottomNav>
       </View>
     )
   }
@@ -188,17 +155,5 @@ function getBalance(balance) {
 }
 
 const styles = StyleSheet.create({
-  container: appStyles.container,
-  actions: {
-    flexDirection: 'row',
-    'justifyContent': 'space-between',
-    padding: 20
-  },
-  actionBtn: {
-    width: 48,
-    height: 48
-  },
-  refresh: {
-
-  }
+  container: appStyles.container
 })
