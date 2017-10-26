@@ -49,8 +49,8 @@ export default class List extends React.Component {
   print({item}) {
     const defaultImg = require('../assets/img/ethgreen.png')
     return (
-        <TouchableHighlight underlayColor='transparent'
-          onPress={this.openAddress.bind(this, item.key)}>
+      <TouchableHighlight underlayColor='transparent'
+        onPress={this.openAddress.bind(this, item.key)}>
           <View style={style.listRow}>
             <View>
               <QRCode
@@ -69,7 +69,7 @@ export default class List extends React.Component {
               </Text>
             </View>
         </View>
-       </TouchableHighlight>
+      </TouchableHighlight>
     )
   }
 }
@@ -95,10 +95,17 @@ const style = StyleSheet.create({
   listRow: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     borderWidth: 0.5,
     borderColor: 'gray',
-    padding: 10
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderLeftWidth: 0,
+    padding: 10,
+    marginTop: 3,
+    backgroundColor: 'white'
+  },
+  columnInfo: {
+    paddingLeft: 10
   },
   listColumn: {
     flex: 1,
@@ -118,7 +125,8 @@ const style = StyleSheet.create({
     height: 64
   },
   listAddress: {
-    fontSize: 18
+    fontSize: 18,
+    color: '#1B5E20' // material green 900
   },
   listItemInfo: {
     fontSize: 12,

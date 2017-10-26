@@ -1,10 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-native'
+import appStyles from './styles'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
   footer: {
-    backgroundColor: '#c1efb8',
+    backgroundColor: appStyles.color.primary[100],
     alignItems: 'center',
     justifyContent: 'center',
     height: 64
