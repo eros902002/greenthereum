@@ -32,6 +32,8 @@ export default class BottomNav extends React.Component {
     this.addAddress = this.addAddress.bind(this)
     this.showList = this.showList.bind(this)
     this.showDetails = this.showDetails.bind(this)
+    this.getRefreshButton = this.getRefreshButton.bind(this)
+
     this.navigation = this.props.screenProps.rootNavigation
     this.mainComponent = this.props.screenProps.mainComponent
   }

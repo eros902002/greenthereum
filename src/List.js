@@ -22,12 +22,22 @@ export default class List extends React.Component {
   constructor(props) {
     super(props)
     this.rootNavigation = this.props.screenProps.rootNavigation
+    this.mainComponent = this.props.screenProps.mainComponent
   }
 
-  openAddress(address) {
-    console.log(`open address ${address}`)
-    Linking.openURL(`${API.URL.ADDRESS_INFO}${address}`)
-      .catch(err => console.error('An error occurred', err))
+  openAddress(account) {
+    console.log(`open address ${account.key}`)
+    this.mainComponent.setState((prevState) => {
+      return {
+        screen: 'details'
+      }
+    })
+    this.rootNavigation.navigate('Details', {
+      mainComponent: this.mainComponent,
+      account: account
+    })
+    // Linking.openURL(`${API.URL.ADDRESS_INFO}${address}`)
+    //   .catch(err => console.error('An error occurred', err))
   }
 
   render() {
@@ -58,7 +68,7 @@ export default class List extends React.Component {
     const defaultImg = require('../assets/img/ethgreen.png')
     return (
       <TouchableHighlight underlayColor='transparent'
-        onPress={this.openAddress.bind(this, item.key)}>
+        onPress={this.openAddress.bind(this, item)}>
           <View style={style.listRow}>
             <View>
               <QRCode
