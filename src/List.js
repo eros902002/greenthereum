@@ -11,6 +11,11 @@ import {
 } from 'react-native'
 import QRCode from 'react-native-qrcode'
 import API from './api'
+import {
+  formatDate,
+  getBalanceText,
+  getShortAddress
+} from './utils'
 import appStyles from './styles'
 
 export default class List extends React.Component {
@@ -27,13 +32,16 @@ export default class List extends React.Component {
 
   render() {
     const fromCache = this.props.screenProps.mainState.cached
+    const date = new Date(this.props.date)
+    const stateDate = formatDate(date)
     return (
       <View style={[appStyles.container, style.listContainer]}>
         <View style={style.listHeader}>
           {
             fromCache ?
-            <Text style={style.listHeaderTextCache}> cached </Text> :
-            undefined
+              <Text style={style.listHeaderTextCache}>
+                Connection error: Last update {stateDate}
+              </Text> : undefined
           }
         </View>
         <ScrollView>
@@ -72,19 +80,6 @@ export default class List extends React.Component {
       </TouchableHighlight>
     )
   }
-}
-
-function getBalanceText(balance) {
-  const decimalPos = balance.indexOf('.')
-  const length = balance.length
-  const MAX_DECIMAL = 6
-  return decimalPos !== -1 ?
-    balance.substr(0, decimalPos + MAX_DECIMAL) :
-    balance
-}
-
-function getShortAddress(address) { // length >= 40
-  return `${address.substr(0, 10)}...${address.substr(-5)}`
 }
 
 const style = StyleSheet.create({

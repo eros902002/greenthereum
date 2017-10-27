@@ -8,15 +8,21 @@ const style = StyleSheet.create({
     backgroundColor: appStyles.color.primary[900],
     alignItems: 'center',
     justifyContent: 'center',
-    height: 96,
-    paddingTop: 10
+    height: 110,
+    paddingBottom: 25,
+    paddingTop: 48
   },
   headerText: {
-    paddingLeft: 5,
-    paddingBottom: 32,
-    paddingTop: 32,
     fontSize: 20,
     color: 'white'
+  },
+  headerVersion: {
+    fontSize: 8,
+    color: 'white'
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 })
 const defaultImg = require('../assets/img/eth2.png')
@@ -31,10 +37,15 @@ export default class Header extends React.Component {
     this.navigation.goBack()
   }
   render() {
+    const version = require('../package.json').version
+    console.log('App version:', version)
     return (
       <View style={style.header}>
         <TouchableHighlight underlayColor='transparent' onPress={this.onPressHeader.bind(this)}>
-          <Text style={style.headerText}>Greenthereum</Text>
+          <View style={style.center}>
+            <Text style={style.headerText}>Greenthereum</Text>
+            <Text style={style.headerVersion}>{`v${version}`}</Text>
+          </View>
         </TouchableHighlight>
       </View>
     )

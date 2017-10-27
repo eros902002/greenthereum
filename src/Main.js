@@ -7,7 +7,7 @@ import {
   Image,
   FlatList
 } from 'react-native'
-import Units from 'ethereumjs-units'
+import ethUnit from 'ethjs-unit'
 import List from './List'
 import Welcome from './Welcome'
 import Header from './Header'
@@ -60,7 +60,7 @@ export default class Main extends React.Component {
         const stats = jsons[0].result
         const accounts = jsons[1].result
         const items = accounts.map((account) => {
-          const balance = getBalance(account.balance)
+          const balance = convertBalanceFromWei(account.balance)
           const usdBalance = (balance * Number(stats.ethusd)).toFixed(2)
           return {
             key: account.account,
@@ -133,7 +133,7 @@ export default class Main extends React.Component {
     }
     const content = !this.state.accounts.length ?
       <Welcome screenProps={screenProps}></Welcome> :
-      <List screenProps={screenProps} items={this.state.accounts}></List>
+      <List screenProps={screenProps} date={this.state.date} items={this.state.accounts}></List>
 
     return (
       <View style={styles.container}>
@@ -150,8 +150,8 @@ export default class Main extends React.Component {
   }
 }
 
-function getBalance(balance) {
-  return Units.convert(balance, 'wei', 'eth')
+function convertBalanceFromWei(wei) {
+  return ethUnit.fromWei(wei, 'ether')
 }
 
 const styles = StyleSheet.create({

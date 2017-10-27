@@ -100,11 +100,6 @@ export default class AddAddress extends React.Component {
   }
 }
 
-function isValidAddress(text) {
-  const re = /[0-9A-Fa-f]{6}/g
-  return text.test(re) && text.length >= 40 && text.length <= 42
-}
-
 const style = StyleSheet.create({
   inputContainer: {
     paddingTop: 10

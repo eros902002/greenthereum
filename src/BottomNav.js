@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   bottomBtn: {
-    width: 32,
-    height: 32
+    width: 40,
+    height: 40
   }
 })
 
