@@ -16,5 +16,15 @@ export default {
   container: {
     flex: 1,
     backgroundColor: '#E8F5E9'// material green 50
+  },
+  headerStyle: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: '#1B5E20',
+    height: 96,
+  },
+  headerTitleStyle: {
+    color: 'white',
+    fontWeight: 'normal'
   }
 }

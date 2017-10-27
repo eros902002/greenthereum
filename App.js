@@ -12,11 +12,8 @@ const screens = {
   Add: { screen: AddAddress },
   Details: { screen: Details }
 }
-const opts = {
-  headerMode: 'none'
-}
 // init router
-const Greenthereum = StackNavigator(screens , opts)
+const Greenthereum = StackNavigator(screens)
 
 export default class App extends React.Component {
   render() {

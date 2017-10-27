@@ -8,10 +8,14 @@ import {
   View
   } from 'react-native'
 import QRCode from 'react-native-qrcode'
-import Header from './Header'
-import styles from './styles'
+import appStyles from './styles'
 
 export default class AddAddress extends React.Component {
+  static navigationOptions = {
+    headerTitle: 'Account',
+    headerStyle: appStyles.headerStyle,
+    headerTitleStyle: appStyles.headerTitleStyle
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -37,7 +41,6 @@ export default class AddAddress extends React.Component {
     }
     return (
       <View style={style.container}>
-        <Header screenProps={screenProps}></Header>
         <View style={style.detailHeader}>
           <QRCode
             value={this.state.account.key}
@@ -52,7 +55,7 @@ export default class AddAddress extends React.Component {
 }
 
 const style = StyleSheet.create({
-  container: styles.container,
+  container: appStyles.container,
   detailHeader: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -62,6 +65,6 @@ const style = StyleSheet.create({
   address: {
     paddingTop: 5,
     fontSize: 12,
-    color: styles.color.primary[900]
+    color: appStyles.color.primary[900]
   }
 })

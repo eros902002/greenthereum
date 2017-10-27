@@ -8,9 +8,9 @@ const style = StyleSheet.create({
     backgroundColor: appStyles.color.primary[900],
     alignItems: 'center',
     justifyContent: 'center',
-    height: 110,
-    paddingBottom: 25,
-    paddingTop: 48
+    height: 96,
+    paddingBottom: 20,
+    paddingTop: 32
   },
   headerText: {
     fontSize: 20,

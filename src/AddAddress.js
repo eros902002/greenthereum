@@ -8,12 +8,17 @@ import {
   TouchableHighlight,
   View
   } from 'react-native'
-import Header from './Header'
-import styles from './styles'
+import appStyles from './styles'
 import {isEthereumAddress} from './utils'
 import {STG_ADDRESSES} from './constants'
 
 export default class AddAddress extends React.Component {
+  static navigationOptions = {
+    headerTitle: 'Account',
+    headerStyle: appStyles.headerStyle,
+    headerTitleStyle: appStyles.headerTitleStyle
+  }
+
   constructor(props) {
     super(props)
     this.navigation = this.props.navigation
@@ -70,7 +75,6 @@ export default class AddAddress extends React.Component {
       <Text style={style.validation}>Please paste or write a valid address</Text>
     return (
       <View style={style.container}>
-        <Header screenProps={screenProps}></Header>
         <View style={style.center}>
           <View style={style.inputContainer}>
             <TextInput

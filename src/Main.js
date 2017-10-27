@@ -7,10 +7,9 @@ import {
   Image,
   FlatList
 } from 'react-native'
-import ethUnit from 'ethjs-unit'
+import ethUnit from 'ethereum-units'
 import List from './List'
 import Welcome from './Welcome'
-import Header from './Header'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
@@ -21,6 +20,11 @@ import appStyles from './styles'
 const debounce = require('lodash.debounce')
 
 export default class Main extends React.Component {
+  static navigationOptions = {
+    headerTitle: 'Greenthereum',
+    headerStyle: appStyles.headerStyle,
+    headerTitleStyle: appStyles.headerTitleStyle
+  }
   constructor(props) {
     super(props)
     this.state = {
@@ -138,7 +142,6 @@ export default class Main extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Header screenProps={screenProps}></Header>
         {
           this.state.loading ?
             <ActivityIndicatorLayer animating={true}></ActivityIndicatorLayer> :
@@ -152,7 +155,7 @@ export default class Main extends React.Component {
 }
 
 function convertBalanceFromWei(wei) {
-  return ethUnit.fromWei(wei, 'ether')
+  return ethUnit.convert(wei, 'wei', 'ether').toString()
 }
 
 const styles = StyleSheet.create({
