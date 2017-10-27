@@ -24,6 +24,7 @@ export default class Main extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      screen: 'view',
       accounts: [],
       stats: {
         ethbtc: '-',
