@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Greenthereum",
-    "icon": "./assets/img/ethgreen.png",
-    "version": "0.1.4",
+    "icon": "./assets/img/ico.png",
+    "version": "0.2.0",
     "slug": "greenthereum",
     "sdkVersion": "21.0.0",
     "ios": {
