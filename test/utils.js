@@ -44,4 +44,20 @@ describe('utils', function() {
       assert.equal(actual, expected)
     })
   })
+
+  describe('formatCurrency', function () {
+    it('should format the amount properly', function () {
+      const actual = utils.formatCurrency('5300', 'USD')
+      const expected = '$5,300.00'
+      assert.equal(actual, expected)
+    })
+  })
+
+  describe('getCurrencySymbol', function () {
+    it('should return the proper symbol', function () {
+      const actual = utils.getCurrencySymbol('USD')
+      const expected = '$'
+      assert.equal(actual, expected)
+    })
+  })
 })
