@@ -14,9 +14,10 @@ import {STG_ADDRESSES} from './constants'
 
 export default class AddAddress extends React.Component {
   static navigationOptions = {
-    headerTitle: 'Account',
+    headerTitle: 'Add account to track',
     headerStyle: appStyles.headerStyle,
-    headerTitleStyle: appStyles.headerTitleStyle
+    headerTitleStyle: appStyles.headerTitleStyle,
+    headerTintColor: appStyles.color.white
   }
 
   constructor(props) {

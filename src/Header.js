@@ -25,7 +25,6 @@ const style = StyleSheet.create({
     justifyContent: 'center'
   }
 })
-const defaultImg = require('../assets/img/eth2.png')
 
 export default class Header extends React.Component {
   constructor(props) {

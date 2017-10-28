@@ -8,13 +8,17 @@ import {
   View
   } from 'react-native'
 import QRCode from 'react-native-qrcode'
+import {
+  getBalanceText
+} from './utils'
 import appStyles from './styles'
 
 export default class AddAddress extends React.Component {
   static navigationOptions = {
-    headerTitle: 'Account',
+    headerTitle: 'Account overview',
     headerStyle: appStyles.headerStyle,
-    headerTitleStyle: appStyles.headerTitleStyle
+    headerTitleStyle: appStyles.headerTitleStyle,
+    headerTintColor: appStyles.color.white
   }
   constructor(props) {
     super(props)
@@ -39,15 +43,26 @@ export default class AddAddress extends React.Component {
       rootNavigation: this.navigation,
       mainComponent: this.mainComponent
     }
+    const account = this.state.account
     return (
       <View style={style.container}>
-        <View style={style.detailHeader}>
-          <QRCode
-            value={this.state.account.key}
-            size={160}
-            bgColor='black'
-            fgColor='white'/>
-            <Text style={style.address}>{this.state.account.key}</Text>
+        <View style={style.detail}>
+          <View style={style.detailHeader}>
+            <QRCode
+              value={account.key}
+              size={160}
+              bgColor='black'
+              fgColor='white'/>
+              <Text style={style.address}>{account.key}</Text>
+          </View>
+          <View style={style.balanceRow}>
+            <View style={style.balanceColumn}>
+              <Text><Text style={style.bold}>{getBalanceText(account.balance || '0')}</Text> ETH</Text>
+            </View>
+            <View style={style.balanceColumn}>
+              <Text><Text style={style.bold}>{account.usd}</Text> USD</Text>
+            </View>
+          </View>
         </View>
       </View>
     )
@@ -56,6 +71,10 @@ export default class AddAddress extends React.Component {
 
 const style = StyleSheet.create({
   container: appStyles.container,
+  detail: {
+    backgroundColor: appStyles.color.white,
+    marginTop: 3
+  },
   detailHeader: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -66,5 +85,18 @@ const style = StyleSheet.create({
     paddingTop: 5,
     fontSize: 12,
     color: appStyles.color.primary[900]
+  },
+  balanceRow: {
+    flexDirection: 'row',
+    paddingBottom: 10
+  },
+  balanceColumn: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bold: {
+    fontWeight: 'bold'
   }
 })

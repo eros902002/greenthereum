@@ -65,7 +65,6 @@ export default class List extends React.Component {
   }
 
   print({item}) {
-    const defaultImg = require('../assets/img/ethgreen.png')
     return (
       <TouchableHighlight underlayColor='transparent'
         onPress={this.openAddress.bind(this, item)}>

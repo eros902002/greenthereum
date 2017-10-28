@@ -59,7 +59,6 @@ export default class Main extends React.Component {
     Promise.all([API.getStats(), this.getAccounts()])
       .then((responses) => {
         return Promise.all([responses[0].json(), responses[1].json()])
-          // return Promise.all([{}.a()])
       })
       .then((jsons) => {
         const stats = jsons[0].result

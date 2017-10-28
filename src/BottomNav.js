@@ -30,7 +30,7 @@ export default class BottomNav extends React.Component {
   constructor(props) {
     super(props)
     this.addAddress = this.addAddress.bind(this)
-    this.showList = this.showList.bind(this)
+    this.showMore = this.showMore.bind(this)
     this.showDetails = this.showDetails.bind(this)
     this.getRefreshButton = this.getRefreshButton.bind(this)
 
@@ -43,7 +43,7 @@ export default class BottomNav extends React.Component {
       mainComponent: this.mainComponent
     })
   }
-  showList() {
+  showMore() {
     console.log('list')
   }
   showDetails() {
@@ -62,7 +62,7 @@ export default class BottomNav extends React.Component {
   }
   render() {
     const addButton = require('../assets/img/plus.png')
-    const listButton = require('../assets/img/list.png')
+    const moreBtn = require('../assets/img/more.png')
     return (
       <View style={styles.navigation}>
         <View style={styles.bottomGrid}>
@@ -71,13 +71,13 @@ export default class BottomNav extends React.Component {
          </TouchableHighlight>
         </View>
         <View style={styles.bottomGrid}>
-          <TouchableHighlight key="list" underlayColor='transparent' onPress={this.showList}>
-            <Image style={styles.bottomBtn} source={listButton}></Image>
-          </TouchableHighlight>
-        </View>
-        <View style={styles.bottomGrid}>
           {this.getRefreshButton()}
        </View>
+        <View style={styles.bottomGrid}>
+          <TouchableHighlight key="list" underlayColor='transparent' onPress={this.showMore}>
+            <Image style={styles.bottomBtn} source={moreBtn}></Image>
+          </TouchableHighlight>
+        </View>
       </View>
     )
   }

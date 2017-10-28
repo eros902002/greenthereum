@@ -11,7 +11,8 @@ export default {
       700: '#388E3C',
       800: '#2E7D32',
       900: '#1B5E20'
-    }
+    },
+    white: '#FFF'
   },
   container: {
     flex: 1,
