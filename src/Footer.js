@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-native'
-import appStyles from './styles'
+import appStyles from './lib/styles'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({

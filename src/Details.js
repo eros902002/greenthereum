@@ -10,8 +10,8 @@ import {
 import QRCode from 'react-native-qrcode'
 import {
   getBalanceText
-} from './utils'
-import appStyles from './styles'
+} from './lib/utils'
+import appStyles from './lib/styles'
 
 export default class AddAddress extends React.Component {
   static navigationOptions = {

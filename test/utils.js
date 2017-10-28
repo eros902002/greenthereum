@@ -1,5 +1,5 @@
 const assert = require('assert')
-const utils = require('../src/utils')
+const utils = require('../src/lib/utils')
 
 describe('utils', function() {
   describe('#isEthereumAddress()', function() {

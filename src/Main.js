@@ -13,9 +13,9 @@ import Welcome from './Welcome'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
-import {STG_ADDRESSES, STG_STATE} from './constants'
-import API from './api'
-import appStyles from './styles'
+import {STG_ADDRESSES, STG_STATE} from './lib/constants'
+import API from './lib/api'
+import appStyles from './lib/styles'
 
 const debounce = require('lodash.debounce')
 

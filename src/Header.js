@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, Text, View, TouchableHighlight } from 'react-native'
-import appStyles from './styles'
+import appStyles from './lib/styles'
 
 const style = StyleSheet.create({
   header: {

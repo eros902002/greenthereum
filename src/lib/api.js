@@ -1,4 +1,4 @@
-const {HOST, KEY} = require('../ETHERSCAN_API.json')
+const {HOST, KEY} = require('../../ETHERSCAN_API.json')
 const STATS_URL = `${HOST}?module=stats&action=ethprice&apikey=${KEY}`
 const MIN_REQUEST_TIME = 1500
 

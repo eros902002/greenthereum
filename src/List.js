@@ -10,13 +10,13 @@ import {
   Linking
 } from 'react-native'
 import QRCode from 'react-native-qrcode'
-import API from './api'
+import API from './lib/api'
 import {
   formatDate,
   getBalanceText,
   getShortAddress
-} from './utils'
-import appStyles from './styles'
+} from './lib/utils'
+import appStyles from './lib/styles'
 
 export default class List extends React.Component {
   constructor(props) {

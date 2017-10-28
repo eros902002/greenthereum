@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native'
 import Warning from './Warning'
 import List from './List'
-import appStyles from './styles'
+import appStyles from './lib/styles'
 
 const styles = StyleSheet.create({
   warning: {

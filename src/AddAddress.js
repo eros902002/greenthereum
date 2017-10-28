@@ -8,9 +8,9 @@ import {
   TouchableHighlight,
   View
   } from 'react-native'
-import appStyles from './styles'
-import {isEthereumAddress} from './utils'
-import {STG_ADDRESSES} from './constants'
+import appStyles from './lib/styles'
+import {isEthereumAddress} from './lib/utils'
+import {STG_ADDRESSES} from './lib/constants'
 
 export default class AddAddress extends React.Component {
   static navigationOptions = {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import appStyles from './styles'
+import appStyles from './lib/styles'
 
 const styles = StyleSheet.create({
   container: {
