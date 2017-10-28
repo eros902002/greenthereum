@@ -27,6 +27,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "currency-formatter": "^1.3.0",
     "ethereum-blockies": "^0.1.1",
     "ethereum-units": "0.0.1-b",
     "expo": "^21.0.0",

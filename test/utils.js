@@ -28,20 +28,20 @@ describe('utils', function() {
   })
 
   describe('getBalanceText', function () {
-    it('should return a shorter string with 5 decimals', function () {
+    it('should return a shorter string with 8 decimals', function () {
       const balance = '1000000.123456789'
       const actual = utils.getBalanceText(balance)
-      const expeted = '1000000.12345'
+      const expected = '1000000.12345678'
 
-      assert.equal(actual, expeted)
+      assert.equal(actual, expected)
     })
 
     it('should return a shorter string with no decimals', function () {
       const balance = '1'
       const actual = utils.getBalanceText(balance)
-      const expeted = '1'
+      const expected = '1'
 
-      assert.equal(actual, expeted)
+      assert.equal(actual, expected)
     })
   })
 })

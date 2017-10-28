@@ -5,10 +5,12 @@ import {
   Image,
   Text,
   TouchableHighlight,
-  View
+  View,
+  ScrollView
   } from 'react-native'
 import QRCode from 'react-native-qrcode'
 import {
+  formatCurrency,
   getBalanceText
 } from './lib/utils'
 import appStyles from './lib/styles'
@@ -33,7 +35,8 @@ export default class AddAddress extends React.Component {
     this.mainComponent = params.mainComponent
     this.setState((prevState) => {
       return {
-        account: params.account
+        account: params.account,
+        currency: this.mainComponent.currency
       }
     })
   }
@@ -57,12 +60,24 @@ export default class AddAddress extends React.Component {
           </View>
           <View style={style.balanceRow}>
             <View style={style.balanceColumn}>
-              <Text><Text style={style.bold}>{getBalanceText(account.balance || '0')}</Text> ETH</Text>
+              <Text>
+                <Text style={style.bold}>{getBalanceText(account.balance || '0')} </Text>
+                  Ether
+               </Text>
             </View>
             <View style={style.balanceColumn}>
-              <Text><Text style={style.bold}>{account.usd}</Text> USD</Text>
+              <Text>
+                {formatCurrency(account.usd, this.state.currency)}
+              </Text>
             </View>
           </View>
+        </View>
+        <View style={style.detail}>
+          <View style={style.transactions}>
+            <Text style={style.transactionsTitle}>Transactions</Text>
+          </View>
+          <ScrollView style={style.transactionsList}>
+          </ScrollView>
         </View>
       </View>
     )
@@ -98,5 +113,17 @@ const style = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold'
+  },
+  transactions: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5
+  },
+  transactionsTitle: {
+    fontSize: 16
+  },
+  transactionsList: {
+    flex: 1
   }
 })

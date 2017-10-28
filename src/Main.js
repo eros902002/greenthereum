@@ -31,9 +31,10 @@ export default class Main extends React.Component {
       screen: 'Main',
       accounts: [],
       stats: {
-        ethbtc: '-',
-        ethusd: '-'
+        ethbtc: '0',
+        ethusd: '0'
       },
+      currency: 'USD',
       cached: false,
       date: null,
       loading: true

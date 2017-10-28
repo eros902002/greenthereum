@@ -12,9 +12,10 @@ import {
 import QRCode from 'react-native-qrcode'
 import API from './lib/api'
 import {
+  formatCurrency,
   formatDate,
   getBalanceText,
-  getShortAddress
+  getShortAddress,
 } from './lib/utils'
 import appStyles from './lib/styles'
 
@@ -69,10 +70,10 @@ export default class List extends React.Component {
       <TouchableHighlight underlayColor='transparent'
         onPress={this.openAddress.bind(this, item)}>
           <View style={style.listRow}>
-            <View>
+            <View style={{alignItems: 'center'}}>
               <QRCode
                 value={item.key}
-                size={64}
+                size={75}
                 bgColor='black'
                 fgColor='white'/>
             </View>
@@ -80,10 +81,16 @@ export default class List extends React.Component {
               <Text style={style.listAddress}>
                 {getShortAddress(item.key)}
               </Text>
-              <Text style={style.listItemInfo}>
-                <Text style={style.bold}>{getBalanceText(item.balance)}</Text> ETH {'≈'}
-                <Text style={style.bold}> {item.usd}</Text> USD
-              </Text>
+              <View style={style.listItemInfo}>
+                <View>
+                  <Text><Text style={style.bold}>{getBalanceText(item.balance)}</Text> Ether</Text>
+                </View>
+                <View>
+                  <Text>
+                    {formatCurrency(item.usd, this.mainComponent.state.currency)}
+                  </Text>
+                </View>
+              </View>
             </View>
         </View>
       </TouchableHighlight>
@@ -133,7 +140,6 @@ const style = StyleSheet.create({
     color: '#1B5E20' // material green 900
   },
   listItemInfo: {
-    fontSize: 12,
     paddingLeft: 5,
     paddingTop: 3
   },

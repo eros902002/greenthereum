@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-native'
 import appStyles from './lib/styles'
+import {formatCurrency} from './lib/utils'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
@@ -36,10 +37,10 @@ export default class Footer extends React.Component {
         <TouchableHighlight underlayColor='transparent' onPress={this.onFooterPress.bind(this)}>
           <View>
             <Text style={style.footerText}>
-              <Text style={style.bold}>1</Text> ETH @ <Text style={style.bold}>{mainState.stats.ethusd}</Text> USD
+              1 Ether - {formatCurrency(mainState.stats.ethusd, mainState.currency)}
             </Text>
             <Text style={style.footerText}>
-              <Text style={style.bold}>1</Text> ETH @ <Text style={style.bold}>{mainState.stats.ethbtc}</Text> BTC
+              1 Ether - {mainState.stats.ethbtc} BTC
             </Text>
           </View>
         </TouchableHighlight>
