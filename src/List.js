@@ -81,7 +81,7 @@ export default class List extends React.Component {
               <Text style={style.listAddress}>
                 {getShortAddress(item.key)}
               </Text>
-              <View style={style.listItemInfo}>
+              <View style={[style.listItemInfo, style.center]}>
                 <View>
                   <Text><Text style={style.bold}>{formatNumber(item.balance)}</Text> Ether</Text>
                 </View>
@@ -118,9 +118,12 @@ const style = StyleSheet.create({
   columnInfo: {
     paddingLeft: 10
   },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   listColumn: {
     flex: 1,
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
   },

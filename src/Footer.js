@@ -7,16 +7,17 @@ import {formatCurrency, formatNumber} from './lib/utils'
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
   footer: {
-    flexDirection: 'column',
     backgroundColor: appStyles.color.primary[100],
-    alignItems: 'center',
-    justifyContent: 'center',
     height: 70,
     padding: 3
   },
   footerText: {
     padding: 2,
     fontSize: 12
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   footerSupply: {
     padding: 2,
@@ -42,7 +43,7 @@ export default class Footer extends React.Component {
     const mainState = this.props.screenProps.mainState
     return (
       <TouchableHighlight underlayColor='transparent' onPress={this.onFooterPress.bind(this)}>
-        <View>
+        <View style={style.center}>
          { mainState.stats.ethusd ? (
             <View>
              <Text style={style.footerText}>

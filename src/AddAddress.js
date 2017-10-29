@@ -160,6 +160,6 @@ const style = StyleSheet.create({
   },
   qrText: {
     paddingBottom: 10,
-    fontSize: 10
+    fontSize: 12
   }
 })
