@@ -22,6 +22,7 @@ import {
 import API from './lib/api'
 import appStyles from './lib/styles'
 
+const debounce = require('lodash.debounce')
 const imgDown = require('../assets/img/downGreen.png')
 const imgUp = require('../assets/img/upRed.png')
 const imgChecked = require('../assets/img/checked.png')
@@ -43,10 +44,15 @@ export default class AddAddress extends React.Component {
     }
     this.rootNavigation = this.props.navigation
     this.printTransaction = this.printTransaction.bind(this)
+    this.getTransactions = debounce(this.getTransactions.bind(this), API.const.MIN_REQUEST_TIME, {
+      'leading': true,
+      'trailing': false
+    })
   }
 
   componentDidMount() {
     const { params } = this.rootNavigation.state
+    this._isMounted = true // avoid: Can only update mounted components error
     this.mainComponent = params.mainComponent
     this.setState((prevState) => {
       return {
@@ -54,12 +60,18 @@ export default class AddAddress extends React.Component {
         currency: this.mainComponent.currency
       }
     })
-    console.log(`get transactions for ${params.account.key}`)
-    API.getNormalTransactions({ address: params.account.key})
+    this.getTransactions(params.account)
+  }
+
+  getTransactions(account) {
+    console.log(`get transactions for ${account.key}`)
+    API.getNormalTransactions({ address: account.key})
       .then((response) => response.json())
       .then((json) => {
         console.log('getNormalTransactions:', json.message)
-        this.setState((prevState) => ({txMsg: json.message}))
+        if (this._isMounted) {
+          this.setState((prevState) => ({txMsg: json.message}))
+        }
         return json.message === 'OK' && json.result || []
       })
       .then((transactions) => {
@@ -68,47 +80,55 @@ export default class AddAddress extends React.Component {
           return {
             key: tx.hash,
             date: new Date(Number(tx.timeStamp) * 1000),
-            value: formatNumber(convertBalanceFromWei(tx.value), 2),
+            value: convertBalanceFromWei(tx.value),
             blockNumber: tx.blockNumber,
             confirmations: tx.confirmations,
             from: tx.from,
             to: tx.to,
-            in: tx.to.toLowerCase() === params.account.key.toLowerCase()
+            in: tx.to.toLowerCase() === account.key.toLowerCase()
           }
         })
-        this.setState((prevState) => {
-          return {
-            transactions: txs,
-            txLoading: false
-          }
-        })
+        if (this._isMounted) {
+          this.setState((prevState) => {
+            return {
+              transactions: txs,
+              txLoading: false
+            }
+          })
+        }
         // TODO: Backup this request
       })
       .catch((err) => {
         console.log(err)
-        this.setState((prevState) => {
-          return {
-            txLoading: false
-          }
-        })
+        if (this._isMounted) {
+          this.setState((prevState) => {
+            return {
+              txLoading: false
+            }
+          })
+        }
       })
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false // avoid: Can only update mounted components error
   }
 
   printTransaction(data) {
     const tx = data.item
     const imgTx = (
       <Image
-        style={style.img}
+        style={style.imgSmall}
         source={tx.in ? imgDown : imgUp}>
       </Image>
     )
     return (
       <View style={style.row}>
-        <View style={style.column}>
+        <View style={style.firstColumn}>
           {imgTx}
         </View>
         <View style={style.column}>
-          <Text style={style.colDate}>{formatDate(tx.date)}</Text>
+          <Text style={style.small}>{formatDate(tx.date)}</Text>
         </View>
         <View style={style.column}>
           <Text style={style.colAddress}>{getShortAddress(tx.from, 2, 2)}</Text>
@@ -117,10 +137,10 @@ export default class AddAddress extends React.Component {
           <Text style={style.colAddress}>{getShortAddress(tx.to, 2, 2)}</Text>
         </View>
         <View style={style.column}>
-          <Text style={style.bold}>{tx.value}</Text>
+          <Text>{formatNumber(tx.value, 5)}</Text>
         </View>
         <View style={style.column}>
-          <Text>{formatNumber(tx.confirmations, 0)}</Text>
+          <Text style={style.small}>{formatNumber(tx.confirmations, 0)}</Text>
         </View>
       </View>
     )
@@ -135,7 +155,7 @@ export default class AddAddress extends React.Component {
     const table = this.state.transactions.length ? (
       <View style={style.transactionsList}>
         <View style={style.row}>
-          <View style={style.column}>
+          <View style={style.firstColumn}>
           </View>
           <View style={style.column}>
             <Text style={style.tableHeader}>Date</Text>
@@ -209,8 +229,8 @@ const style = StyleSheet.create({
     height: 32
   },
   imgSmall: {
-    width: 16,
-    height: 16
+    width: 28,
+    height: 28
   },
   detail: {
     backgroundColor: appStyles.color.white,
@@ -250,6 +270,7 @@ const style = StyleSheet.create({
     fontSize: 16
   },
   transactionsList: {
+    padding: 3
   },
   tableHeader: {
     fontSize: 14
@@ -263,13 +284,16 @@ const style = StyleSheet.create({
     borderLeftWidth: 0,
     padding: 5
   },
+  firstColumn: {
+    width: 40
+  },
   column: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  colDate: {
+  small: {
     fontSize: 10
   },
   colAddress: {

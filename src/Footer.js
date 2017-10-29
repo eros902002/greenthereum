@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-nativ
 import Fetching from './Fetching'
 import appStyles from './lib/styles'
 import {formatCurrency, formatNumber} from './lib/utils'
+import API from './lib/api'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
