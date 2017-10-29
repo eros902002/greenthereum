@@ -4,15 +4,6 @@ function isEthereumAddress(text) {
   return Boolean(text.length >= 40 && /^(0x){0,1}([0-9a-fA-F]{40}$)/.test(text))
 }
 
-function getBalanceText(balance) {
-  const decimalPos = balance.indexOf('.')
-  const length = balance.length
-  const MAX_DECIMAL = 8
-  return decimalPos !== -1 ?
-    balance.substr(0, decimalPos + MAX_DECIMAL + 1) :
-    balance
-}
-
 function getShortAddress(address) { // length >= 40
   return `${address.substr(0, 10)}...${address.substr(-5)}`
 }
@@ -33,10 +24,19 @@ function formatCurrency(number, code = 'USD') {
   })
 }
 
+function formatEther(number, precision = 6) {
+  return currencyFormatter.format(number, {
+    code: '',
+    thousandsSeparator: ',',
+    decimalSeparator: '.',
+    precision: precision
+  })
+}
+
 module.exports = {
   formatCurrency,
   formatDate,
-  getBalanceText,
+  formatEther,
   getCurrencySymbol,
   getShortAddress,
   isEthereumAddress

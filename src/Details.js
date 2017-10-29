@@ -11,7 +11,7 @@ import {
 import QRCode from 'react-native-qrcode'
 import {
   formatCurrency,
-  getBalanceText
+  formatEther
 } from './lib/utils'
 import appStyles from './lib/styles'
 
@@ -48,7 +48,7 @@ export default class AddAddress extends React.Component {
     }
     const account = this.state.account
     return (
-      <View style={style.container}>
+      <ScrollView style={style.container}>
         <View style={style.detail}>
           <View style={style.detailHeader}>
             <QRCode
@@ -61,7 +61,7 @@ export default class AddAddress extends React.Component {
           <View style={style.balanceRow}>
             <View style={style.balanceColumn}>
               <Text>
-                <Text style={style.bold}>{getBalanceText(account.balance || '0')} </Text>
+                <Text style={style.bold}>{formatEther(account.balance || '0')} </Text>
                   Ether
                </Text>
             </View>
@@ -76,10 +76,10 @@ export default class AddAddress extends React.Component {
           <View style={style.transactions}>
             <Text style={style.transactionsTitle}>Transactions</Text>
           </View>
-          <ScrollView style={style.transactionsList}>
-          </ScrollView>
+          <View style={style.transactionsList}>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 }

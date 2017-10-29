@@ -13,8 +13,8 @@ import QRCode from 'react-native-qrcode'
 import API from './lib/api'
 import {
   formatCurrency,
+  formatEther,
   formatDate,
-  getBalanceText,
   getShortAddress,
 } from './lib/utils'
 import appStyles from './lib/styles'
@@ -83,7 +83,7 @@ export default class List extends React.Component {
               </Text>
               <View style={style.listItemInfo}>
                 <View>
-                  <Text><Text style={style.bold}>{getBalanceText(item.balance)}</Text> Ether</Text>
+                  <Text><Text style={style.bold}>{formatEther(item.balance)}</Text> Ether</Text>
                 </View>
                 <View>
                   <Text>

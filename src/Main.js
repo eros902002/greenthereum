@@ -31,8 +31,9 @@ export default class Main extends React.Component {
       screen: 'Main',
       accounts: [],
       stats: {
-        ethbtc: '0',
-        ethusd: '0'
+        ethbtc: null,
+        ethusd: null,
+        supply: null
       },
       currency: 'USD',
       cached: false,
@@ -83,7 +84,18 @@ export default class Main extends React.Component {
             ethusd: stats.ethusd
           }
         })
-        console.log('update backup state:', JSON.stringify(this.state))
+        console.log('update backup (stats, accounts):', JSON.stringify(this.state))
+        AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
+      })
+      .then(API.getTotalSupply)
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState((prevState) => ({
+          stats: Object.assign(this.state.stats, {
+            supply: convertBalanceFromWei(json.result)
+          })
+        }))
+        console.log('update backup (supply):', JSON.stringify(this.state))
         AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
       })
       .catch(this.loadBackup.bind(this))

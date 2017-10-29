@@ -1,5 +1,6 @@
 const {HOST, KEY} = require('../../ETHERSCAN_API.json')
 const STATS_URL = `${HOST}?module=stats&action=ethprice&apikey=${KEY}`
+const TOTAL_SUPPLY_URL = `${HOST}?module=stats&action=ethsupply&apikey=${KEY}`
 const MIN_REQUEST_TIME = 1500
 
 function getAccounts(accounts) {
@@ -18,6 +19,10 @@ function getStats() {
   return fetch(STATS_URL)
 }
 
+function getTotalSupply() {
+  return fetch(TOTAL_SUPPLY_URL)
+}
+
 export default {
   const: {
     MIN_REQUEST_TIME
@@ -27,5 +32,6 @@ export default {
     ADDRESS_INFO: 'https://etherscan.io/address/'
   },
   getAccounts,
-  getStats
+  getStats,
+  getTotalSupply
 }

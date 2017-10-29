@@ -40,8 +40,8 @@ export default class AddAddress extends React.Component {
   }
 
   addAddress() {
-    const newAddress = [this.state.address]
-    if (this.state.valid) {
+    const newAddress = this.state.address
+    if (isEthereumAddress(newAddress)) {
       console.log('mergeItem', newAddress)
       AsyncStorage.getItem(STG_ADDRESSES)
         .then((addressesStr) => {
@@ -51,7 +51,7 @@ export default class AddAddress extends React.Component {
             addresses.push(newAddress)
             AsyncStorage.setItem(STG_ADDRESSES, JSON.stringify(addresses))
           } else {
-            AsyncStorage.setItem(STG_ADDRESSES, JSON.stringify(newAddress))
+            AsyncStorage.setItem(STG_ADDRESSES, JSON.stringify([newAddress]))
           }
         })
         .then(() => {
@@ -59,6 +59,8 @@ export default class AddAddress extends React.Component {
           this.mainComponent.refresh()
           this.navigation.goBack()
         })
+    } else {
+      this.setState({ valid: false })
     }
   }
 

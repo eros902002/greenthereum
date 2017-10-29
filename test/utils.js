@@ -27,24 +27,6 @@ describe('utils', function() {
     })
   })
 
-  describe('getBalanceText', function () {
-    it('should return a shorter string with 8 decimals', function () {
-      const balance = '1000000.123456789'
-      const actual = utils.getBalanceText(balance)
-      const expected = '1000000.12345678'
-
-      assert.equal(actual, expected)
-    })
-
-    it('should return a shorter string with no decimals', function () {
-      const balance = '1'
-      const actual = utils.getBalanceText(balance)
-      const expected = '1'
-
-      assert.equal(actual, expected)
-    })
-  })
-
   describe('formatCurrency', function () {
     it('should format the amount properly', function () {
       const actual = utils.formatCurrency('5300', 'USD')
@@ -57,6 +39,19 @@ describe('utils', function() {
     it('should return the proper symbol', function () {
       const actual = utils.getCurrencySymbol('USD')
       const expected = '$'
+      assert.equal(actual, expected)
+    })
+  })
+
+  describe('formatEther', function () {
+    it('should format the amount properly', function () {
+      const actual = utils.formatEther('5100200300400.999999')
+      const expected = '5,100,200,300,401.000000'
+      assert.equal(actual, expected)
+    })
+    it('should format the decimals properly', function () {
+      const actual = utils.formatEther('123456.12345678', 8)
+      const expected = '123,456.12345678'
       assert.equal(actual, expected)
     })
   })
