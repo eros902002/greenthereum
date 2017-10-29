@@ -2,14 +2,17 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-native'
 import Fetching from './Fetching'
 import appStyles from './lib/styles'
-import {formatCurrency, formatEther} from './lib/utils'
+import {formatCurrency, formatNumber} from './lib/utils'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
   footer: {
+    flexDirection: 'column',
     backgroundColor: appStyles.color.primary[100],
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    height: 70,
+    padding: 3
   },
   footerText: {
     padding: 2,
@@ -49,12 +52,12 @@ export default class Footer extends React.Component {
                1 Ether - {mainState.stats.ethbtc} BTC
              </Text>
             </View>
-          ) : <Fetching msg='convert rate'></Fetching>
+          ) : <Fetching msg='convertion rate'></Fetching>
           }
           { mainState.stats.supply ? (
             <Text style={style.footerSupply}>
               Total supply: <Text style={style.bold}>
-                {formatEther(mainState.stats.supply)}
+                {formatNumber(mainState.stats.supply)}
               </Text> Ether
             </Text>
           ): <Fetching msg='total supply'></Fetching>

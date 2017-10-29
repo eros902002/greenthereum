@@ -1,15 +1,17 @@
 const currencyFormatter = require('currency-formatter')
+const ethUnit = require('ethereum-units')
 
 function isEthereumAddress(text) {
   return Boolean(text.length >= 40 && /^(0x){0,1}([0-9a-fA-F]{40}$)/.test(text))
 }
 
-function getShortAddress(address) { // length >= 40
-  return `${address.substr(0, 10)}...${address.substr(-5)}`
+function getShortAddress(address, first = 10, last = 5) { // length >= 40
+  return `${address.substr(0, first)}...${address.substr(-1 * last)}`
 }
 
 function formatDate(date) {
-  return `${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()} ` +
+  const year = date.getFullYear().toString().substr(-2)
+  return `${date.getMonth() + 1}/${date.getDate()}/${year} ` +
     `${date.getHours()}:${date.getMinutes()}`
 }
 
@@ -24,7 +26,7 @@ function formatCurrency(number, code = 'USD') {
   })
 }
 
-function formatEther(number, precision = 6) {
+function formatNumber(number, precision = 6) {
   return currencyFormatter.format(number, {
     code: '',
     thousandsSeparator: ',',
@@ -33,10 +35,15 @@ function formatEther(number, precision = 6) {
   })
 }
 
+function convertBalanceFromWei(wei) {
+  return ethUnit.convert(wei, 'wei', 'ether').toString()
+}
+
 module.exports = {
+  convertBalanceFromWei,
   formatCurrency,
   formatDate,
-  formatEther,
+  formatNumber,
   getCurrencySymbol,
   getShortAddress,
   isEthereumAddress

@@ -20,7 +20,7 @@ describe('utils', function() {
   describe('formatDate', function () {
     it('should format date in english', function () {
       const date = new Date(2017, 11, 31, 10, 30)
-      const actual = '12-31-2017 10:30'
+      const actual = '12/31/17 10:30'
       const expected = utils.formatDate(date)
 
       assert.equal(actual, expected)
@@ -43,14 +43,14 @@ describe('utils', function() {
     })
   })
 
-  describe('formatEther', function () {
+  describe('formatNumber', function () {
     it('should format the amount properly', function () {
-      const actual = utils.formatEther('5100200300400.999999')
+      const actual = utils.formatNumber('5100200300400.999999')
       const expected = '5,100,200,300,401.000000'
       assert.equal(actual, expected)
     })
     it('should format the decimals properly', function () {
-      const actual = utils.formatEther('123456.12345678', 8)
+      const actual = utils.formatNumber('123456.12345678', 8)
       const expected = '123,456.12345678'
       assert.equal(actual, expected)
     })

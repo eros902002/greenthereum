@@ -7,7 +7,6 @@ import {
   Image,
   FlatList
 } from 'react-native'
-import ethUnit from 'ethereum-units'
 import List from './List'
 import Welcome from './Welcome'
 import Footer from './Footer'
@@ -15,6 +14,7 @@ import BottomNav from './BottomNav'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
 import {STG_ADDRESSES, STG_STATE} from './lib/constants'
 import API from './lib/api'
+import {convertBalanceFromWei} from './lib/utils'
 import appStyles from './lib/styles'
 
 const debounce = require('lodash.debounce')
@@ -105,6 +105,7 @@ export default class Main extends React.Component {
     console.log(`getAccounts() in ${STG_ADDRESSES}`)
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem(STG_ADDRESSES)
+        .then((result) => result ? JSON.parse(result) : [])
         .then(API.getAccounts)
         .then(resolve)
         .catch(reject)
@@ -164,10 +165,6 @@ export default class Main extends React.Component {
       </View>
     )
   }
-}
-
-function convertBalanceFromWei(wei) {
-  return ethUnit.convert(wei, 'wei', 'ether').toString()
 }
 
 const styles = StyleSheet.create({

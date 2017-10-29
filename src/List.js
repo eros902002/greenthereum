@@ -13,7 +13,7 @@ import QRCode from 'react-native-qrcode'
 import API from './lib/api'
 import {
   formatCurrency,
-  formatEther,
+  formatNumber,
   formatDate,
   getShortAddress,
 } from './lib/utils'
@@ -83,7 +83,7 @@ export default class List extends React.Component {
               </Text>
               <View style={style.listItemInfo}>
                 <View>
-                  <Text><Text style={style.bold}>{formatEther(item.balance)}</Text> Ether</Text>
+                  <Text><Text style={style.bold}>{formatNumber(item.balance)}</Text> Ether</Text>
                 </View>
                 <View>
                   <Text>

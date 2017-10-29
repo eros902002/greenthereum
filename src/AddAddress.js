@@ -78,7 +78,7 @@ export default class AddAddress extends React.Component {
   }
 
   render() {
-    const submitButton = require('../assets/img/download.png')
+    const submitButton = require('../assets/img/plus.png')
     const qrBtn = require('../assets/img/qr-scan.png')
     const screenProps = {
       rootNavigation: this.navigation

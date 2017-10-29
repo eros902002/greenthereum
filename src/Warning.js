@@ -7,13 +7,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  warningText: {
+    color: '#0D47A1'
+  }
 })
 
 export default class Warning extends React.Component {
   render() {
     return (
       <View style={[styles.container, this.props.customStyles]}>
-        <Text>{this.props.msg}</Text>
+        <Text style={styles.warningText}>{this.props.msg}</Text>
       </View>
     )
   }
