@@ -1,6 +1,6 @@
 {
   "name": "greenthereum",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -17,11 +17,10 @@
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js --watch",
-    "utest": "./node_modules/mocha/bin/mocha ./test/"
+    "test": "node node_modules/jest/bin/jest.js"
   },
   "pre-commit": [
-    "utest"
+    "test"
   ],
   "jest": {
     "preset": "jest-expo"
