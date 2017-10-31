@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
 export default class ActivityIndicatorLayer extends React.Component {
   constructor(props){
     super(props)
-    console.log(this.props.animating)
   }
   render() {
     return (
