@@ -30,7 +30,6 @@ function getNormalTransactions(opts) {
     .replace(':page', opts.page || 1)
     .replace(':offset', opts.offset || 50)
   console.log(`fetch ${url}`)
-  return Promise.reject('asd')
   return fetch(url)
 }
 
