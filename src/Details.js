@@ -21,13 +21,14 @@ import {
 } from './lib/utils'
 import API from './lib/api'
 import appStyles from './lib/styles'
+import * as constants from './lib/constants'
 
 const debounce = require('lodash.debounce')
 const imgDown = require('../assets/img/downGreen.png')
 const imgUp = require('../assets/img/upRed.png')
 const imgChecked = require('../assets/img/checked.png')
 
-export default class AddAddress extends React.Component {
+export default class Details extends React.Component {
   static navigationOptions = {
     headerTitle: 'Account overview',
     headerStyle: appStyles.headerStyle,
@@ -38,12 +39,18 @@ export default class AddAddress extends React.Component {
     super(props)
     this.state = {
       account: {},
-      transactions: [],
+      cached: false,
+      currency: constants.CURRENCIES.DEFAULT,
+      transactions: {
+        data: [],
+        date: null
+      },
       txMsg: '',
       txLoading: true
     }
     this.rootNavigation = this.props.navigation
     this.printTransaction = this.printTransaction.bind(this)
+    this.loadBackup = this.loadBackup.bind(this)
     this.getTransactions = debounce(this.getTransactions.bind(this), API.const.MIN_REQUEST_TIME, {
       'leading': true,
       'trailing': false
@@ -89,29 +96,58 @@ export default class AddAddress extends React.Component {
           }
         })
         if (this._isMounted) {
+          const transactions = {
+            data: txs,
+            date: new Date()
+          }
           this.setState((prevState) => {
             return {
-              transactions: txs,
+              cached: false,
+              transactions: transactions,
               txLoading: false
             }
           })
+          console.log(`update backup for ${account.key} transactions:`, txs.length)
+          const keyStorage = constants.STG_ACCOUNT_TXS + account.key.toLowerCase()
+          AsyncStorage.setItem(keyStorage, JSON.stringify(transactions))
         }
-        // TODO: Backup this request
       })
       .catch((err) => {
-        console.log(err)
-        if (this._isMounted) {
-          this.setState((prevState) => {
-            return {
-              txLoading: false
-            }
-          })
-        }
+        const keyStorage = constants.STG_ACCOUNT_TXS + account.key.toLowerCase()
+        this.loadBackup(err, keyStorage)
       })
   }
 
   componentWillUnmount() {
     this._isMounted = false // avoid: Can only update mounted components error
+  }
+
+  loadBackup(err, keyStorage) { // load Backup
+    console.log('getTransactions ERROR:', err)
+    AsyncStorage.getItem(keyStorage)
+      .then(response => JSON.parse(response))
+      .then((backupTxs) => {
+        console.log(`using backup transactions for ${keyStorage} from ${backupTxs.date}`)
+        if (this._isMounted) {
+          this.setState((prevState) => {
+            return {
+              cached: true,
+              transactions: {
+                data: backupTxs.data.map(getTransactionFromDB),
+                date: new Date(backupTxs.date)
+              },
+              txLoading: false,
+              txMsg: 'backup'
+            }
+          })
+        }
+      })
+      .catch((err) => {
+        console.log(`No backup found for ${keyStorage}:`, err)
+        if (this._isMounted) {
+          this.setState((prevState) => ({ txLoading: false }))
+        }
+      })
   }
 
   printTransaction(data) {
@@ -152,7 +188,7 @@ export default class AddAddress extends React.Component {
       mainComponent: this.mainComponent
     }
     const account = this.state.account
-    const table = this.state.transactions.length ? (
+    const table = this.state.transactions.data.length ? (
       <View style={style.transactionsList}>
         <View style={style.row}>
           <View style={style.firstColumn}>
@@ -176,7 +212,7 @@ export default class AddAddress extends React.Component {
           </View>
         </View>
         <FlatList
-          data={this.state.transactions}
+          data={this.state.transactions.data}
           renderItem={this.printTransaction.bind(this)}
         />
       </View>
@@ -191,17 +227,17 @@ export default class AddAddress extends React.Component {
               size={160}
               bgColor='black'
               fgColor='white'/>
-              <Text style={style.address}>{account.key}</Text>
+              <Text selectable style={style.address}>{account.key}</Text>
           </View>
           <View style={style.balanceRow}>
             <View style={style.balanceColumn}>
-              <Text>
+              <Text selectable>
                 <Text style={style.bold}>{formatNumber(account.balance || '0')} </Text>
                   Ether
                </Text>
             </View>
             <View style={style.balanceColumn}>
-              <Text>
+              <Text selectable>
                 {formatCurrency(account.usd, this.state.currency)}
               </Text>
             </View>
@@ -220,6 +256,12 @@ export default class AddAddress extends React.Component {
       </ScrollView>
     )
   }
+}
+
+function getTransactionFromDB(tx) {
+  const txObj = Object.assign({}, tx)
+  txObj.date = new Date(txObj.date)
+  return txObj
 }
 
 const style = StyleSheet.create({
