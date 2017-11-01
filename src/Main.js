@@ -23,7 +23,7 @@ export default class Main extends React.Component {
   static navigationOptions = {
     headerTitle: 'Greenthereum',
     headerStyle: appStyles.headerStyle,
-    headerTitleStyle: appStyles.headerTitleStyle
+    headerTitleStyle: appStyles.headerTitleMain
   }
   constructor(props) {
     super(props)

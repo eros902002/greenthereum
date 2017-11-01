@@ -9,7 +9,6 @@ import {
   TouchableHighlight,
   Linking
 } from 'react-native'
-import QRCode from 'react-native-qrcode'
 import API from './lib/api'
 import {
   formatCurrency,
@@ -18,6 +17,7 @@ import {
   getShortAddress,
 } from './lib/utils'
 import appStyles from './lib/styles'
+const etherIcon = require('../assets/img/ico.png')
 
 export default class List extends React.Component {
   constructor(props) {
@@ -70,16 +70,12 @@ export default class List extends React.Component {
       <TouchableHighlight underlayColor='transparent'
         onPress={this.openAddress.bind(this, item)}>
           <View style={style.listRow}>
-            <View style={{alignItems: 'center'}}>
-              <QRCode
-                value={item.key}
-                size={75}
-                bgColor='black'
-                fgColor='white'/>
+            <View style={style.imgColumn}>
+              <Image source={etherIcon} style={style.listImg}/>
             </View>
             <View style={style.listColumn}>
               <Text style={style.listAddress}>
-                {getShortAddress(item.key)}
+                {getShortAddress(item.key, 14)}
               </Text>
               <View style={[style.listItemInfo, style.center]}>
                 <View>
@@ -127,6 +123,10 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  imgColumn: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   listHeader: {
     alignItems: 'center',
     justifyContent: 'center'
@@ -135,11 +135,11 @@ const style = StyleSheet.create({
     fontSize: 12
   },
   listImg: {
-    width: 64,
-    height: 64
+    width: 60,
+    height: 60
   },
   listAddress: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#1B5E20' // material green 900
   },
   listItemInfo: {

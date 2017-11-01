@@ -32,7 +32,7 @@ export default class Details extends React.Component {
   static navigationOptions = {
     headerTitle: 'Account overview',
     headerStyle: appStyles.headerStyle,
-    headerTitleStyle: appStyles.headerTitleStyle,
+    headerTitleStyle: appStyles.headerTitle,
     headerTintColor: appStyles.color.white
   }
   constructor(props) {
@@ -224,10 +224,10 @@ export default class Details extends React.Component {
           <View style={style.detailHeader}>
             <QRCode
               value={account.key}
-              size={160}
+              size={200}
               bgColor='black'
               fgColor='white'/>
-              <Text selectable style={style.address}>{account.key}</Text>
+              <Text selectable style={style.accountKey}>{account.key}</Text>
           </View>
           <View style={style.balanceRow}>
             <View style={style.balanceColumn}>
@@ -282,10 +282,11 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    paddingTop: 20
   },
-  address: {
-    paddingTop: 5,
+  accountKey: {
+    paddingTop: 20,
+    paddingBottom: 10,
     fontSize: 12,
     color: appStyles.color.primary[900]
   },

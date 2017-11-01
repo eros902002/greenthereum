@@ -18,7 +18,7 @@ export default class AddAddress extends React.Component {
   static navigationOptions = {
     headerTitle: 'Add account to track',
     headerStyle: appStyles.headerStyle,
-    headerTitleStyle: appStyles.headerTitleStyle,
+    headerTitleStyle: appStyles.headerTitle,
     headerTintColor: appStyles.color.white
   }
 
@@ -78,7 +78,7 @@ export default class AddAddress extends React.Component {
   }
 
   render() {
-    const submitButton = require('../assets/img/plus.png')
+    const importBtn = require('../assets/img/download.png')
     const qrBtn = require('../assets/img/qr-scan.png')
     const screenProps = {
       rootNavigation: this.navigation
@@ -108,7 +108,7 @@ export default class AddAddress extends React.Component {
           <TouchableHighlight underlayColor='transparent' onPress={this.addAddress}>
             <Image
               style={style.img}
-              source={submitButton}>
+              source={importBtn}>
             </Image>
          </TouchableHighlight>
         </View>

@@ -18,11 +18,19 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10
+    padding: 8
   },
   bottomBtn: {
-    width: 40,
-    height: 40
+    width: 36,
+    height: 36
+  },
+  font10: {
+    fontSize: 10
+  },
+  col: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 })
 
@@ -30,9 +38,8 @@ export default class BottomNav extends React.Component {
   constructor(props) {
     super(props)
     this.addAddress = this.addAddress.bind(this)
-    this.showMore = this.showMore.bind(this)
+    this.openSettings = this.openSettings.bind(this)
     this.showDetails = this.showDetails.bind(this)
-    this.getRefreshButton = this.getRefreshButton.bind(this)
 
     this.navigation = this.props.screenProps.rootNavigation
     this.mainComponent = this.props.screenProps.mainComponent
@@ -43,40 +50,46 @@ export default class BottomNav extends React.Component {
       mainComponent: this.mainComponent
     })
   }
-  showMore() {
-    console.log('list')
+  openSettings() {
+    console.log('settings')
   }
   showDetails() {
     console.log('details')
   }
-  getRefreshButton() {
-    const refreshButton = require('../assets/img/refresh.png')
-    return (
-      <TouchableHighlight key="refresh" underlayColor='transparent' onPress={this.mainComponent.refresh}>
-        <Image
-          style={styles.bottomBtn}
-          source={refreshButton}>
-        </Image>
-     </TouchableHighlight>
-    )
-  }
+
   render() {
-    const addButton = require('../assets/img/plus.png')
-    const moreBtn = require('../assets/img/more.png')
+    const importBtn = require('../assets/img/download.png')
+    const refreshButton = require('../assets/img/refreshSecundary.png')
+    const settingsBtn = require('../assets/img/settings.png')
+
     return (
       <View style={styles.navigation}>
         <View style={styles.bottomGrid}>
           <TouchableHighlight key="add" underlayColor='transparent' onPress={this.addAddress}>
-            <Image style={styles.bottomBtn} source={addButton}></Image>
+            <View style={styles.col}>
+              <Image style={styles.bottomBtn} source={importBtn}></Image>
+              <Text style={styles.font10}>Import</Text>
+            </View>
          </TouchableHighlight>
         </View>
         <View style={styles.bottomGrid}>
-          {this.getRefreshButton()}
+          <TouchableHighlight key="refresh" underlayColor='transparent' onPress={this.mainComponent.refresh}>
+            <View style={styles.col}>
+              <Image
+                style={styles.bottomBtn}
+                source={refreshButton}>
+              </Image>
+              <Text style={styles.font10}>Refresh</Text>
+            </View>
+         </TouchableHighlight>
        </View>
         <View style={styles.bottomGrid}>
-          <TouchableHighlight key="list" underlayColor='transparent' onPress={this.showMore}>
-            <Image style={styles.bottomBtn} source={moreBtn}></Image>
-          </TouchableHighlight>
+          <View style={styles.col}>
+            <TouchableHighlight key="confs" underlayColor='transparent' onPress={this.openSettings}>
+              <Image style={styles.bottomBtn} source={settingsBtn}></Image>
+            </TouchableHighlight>
+            <Text style={styles.font10}>Settings</Text>
+          </View>
         </View>
       </View>
     )
