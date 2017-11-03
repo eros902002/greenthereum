@@ -12,9 +12,9 @@ import {
 import appStyles from './lib/styles'
 import {isEthereumAddress} from './lib/utils'
 import {STG_ADDRESSES} from './lib/constants'
-const QR_APP_LINK = 'https://play.google.com/store/apps/details?id=tw.mobileapp.qrcode.banner&hl=en'
+const QR_APP_LINK = 'https://play.google.com/store/apps/details?id=tw.mobileapp.qrcode.banner'
 
-export default class AddAddress extends React.Component {
+export default class ImportAccount extends React.Component {
   static navigationOptions = {
     headerTitle: 'Add account to track',
     headerStyle: appStyles.headerStyle,
@@ -25,7 +25,7 @@ export default class AddAddress extends React.Component {
   constructor(props) {
     super(props)
     this.navigation = this.props.navigation
-    this.addAddress = this.addAddress.bind(this)
+    this.importAccount = this.importAccount.bind(this)
     this.qrScanApp = this.qrScanApp.bind(this)
     this.updateText = this.updateText.bind(this)
     this.state = {
@@ -35,11 +35,11 @@ export default class AddAddress extends React.Component {
   }
 
   componentDidMount() {
-    const { params } = this.props.navigation.state
+    const { params } = this.navigation.state
     this.mainComponent = params.mainComponent
   }
 
-  addAddress() {
+  importAccount() {
     const newAddress = this.state.address
     if (isEthereumAddress(newAddress)) {
       console.log('mergeItem', newAddress)
@@ -93,19 +93,19 @@ export default class AddAddress extends React.Component {
             <TextInput
               style={style.input}
               placeholder="Paste your ethereum address"
-             onChangeText={this.updateText}
-             autoFocus={true}
-             autoCorrect={false}
-             blurOnSubmit={true}
-             maxLength={42}
-             returnKeyType='send'
-             onSubmitEditing={this.addAddress}
+              onChangeText={this.updateText}
+              autoFocus={true}
+              autoCorrect={false}
+              blurOnSubmit={true}
+              maxLength={42}
+              returnKeyType='send'
+              onSubmitEditing={this.importAccount}
             />
           </View>
           {inputValidation}
         </View>
         <View style={style.containerSubmit}>
-          <TouchableHighlight underlayColor='transparent' onPress={this.addAddress}>
+          <TouchableHighlight underlayColor='transparent' onPress={this.importAccount}>
             <Image
               style={style.img}
               source={importBtn}>

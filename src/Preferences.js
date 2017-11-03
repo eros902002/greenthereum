@@ -36,7 +36,7 @@ export default class Preferences extends React.Component {
   }
 
   componentDidMount() {
-    const { params } = this.props.navigation.state
+    const { params } = this.navigation.state
     this.mainComponent = params.mainComponent
     const appState = this.mainComponent.state
     this.setState((prevState) => { // predefine saved state

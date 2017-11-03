@@ -51,7 +51,7 @@ export default class Details extends React.Component {
     }
     this.rootNavigation = this.props.navigation
     this.printTransaction = this.printTransaction.bind(this)
-    this.loadBackup = this.loadBackup.bind(this)
+    this.loadTxsBackup = this.loadTxsBackup.bind(this)
     this.getTransactions = debounce(this.getTransactions.bind(this), API.const.MIN_REQUEST_TIME, {
       'leading': true,
       'trailing': false
@@ -116,7 +116,7 @@ export default class Details extends React.Component {
       })
       .catch((err) => {
         const keyStorage = constants.STG_ACCOUNT_TXS + account.key.toLowerCase()
-        this.loadBackup(err, keyStorage)
+        this.loadTxsBackup(err, keyStorage)
       })
   }
 
@@ -124,7 +124,7 @@ export default class Details extends React.Component {
     this._isMounted = false // avoid: Can only update mounted components error
   }
 
-  loadBackup(err, keyStorage) { // load Backup
+  loadTxsBackup(err, keyStorage) { // load Backup
     console.log('getTransactions ERROR:', err)
     AsyncStorage.getItem(keyStorage)
       .then(response => JSON.parse(response))

@@ -2,14 +2,13 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import Main from './src/Main'
-import Welcome from './src/Welcome'
-import AddAddress from './src/AddAddress'
+import ImportAccount from './src/ImportAccount'
 import Details from './src/Details'
 import Preferences from './src/Preferences'
 
 const screens = {
   Home: { screen: Main },
-  Add: { screen: AddAddress },
+  Import: { screen: ImportAccount },
   Details: { screen: Details },
   Preferences: { screen: Preferences}
 }

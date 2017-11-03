@@ -30,6 +30,12 @@ Object.defineProperty(Details.prototype, 'rootNavigation', {
 })
 
 describe('Details', () => {
+  it('renders without crashing', () => {
+    const rendererInstance = renderer.create(<Details />)
+    const rendered = rendererInstance.toJSON()
+    expect(rendered).toBeTruthy()
+  })
+
   it('should call getTransactions()', () => {
     const getTransactionsMock = jest.fn()
     Details.prototype.getTransactions = getTransactionsMock

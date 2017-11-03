@@ -37,16 +37,16 @@ const styles = StyleSheet.create({
 export default class BottomNav extends React.Component {
   constructor(props) {
     super(props)
-    this.addAddress = this.addAddress.bind(this)
+    this.openImport = this.openImport.bind(this)
     this.openPreferences = this.openPreferences.bind(this)
     this.showDetails = this.showDetails.bind(this)
 
     this.navigation = this.props.screenProps.rootNavigation
     this.mainComponent = this.props.screenProps.mainComponent
   }
-  addAddress() {
-    console.log('addAddress()')
-    this.navigation.navigate('Add', {
+  openImport() {
+    console.log('Import()')
+    this.navigation.navigate('Import', {
       mainComponent: this.mainComponent
     })
   }
@@ -68,7 +68,7 @@ export default class BottomNav extends React.Component {
     return (
       <View style={styles.navigation}>
         <View style={styles.bottomGrid}>
-          <TouchableHighlight key="add" underlayColor='transparent' onPress={this.addAddress}>
+          <TouchableHighlight key="add" underlayColor='transparent' onPress={this.openImport}>
             <View style={styles.col}>
               <Image style={styles.bottomBtn} source={importBtn}></Image>
               <Text style={styles.font10}>Import</Text>
