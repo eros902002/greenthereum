@@ -38,7 +38,7 @@ export default class BottomNav extends React.Component {
   constructor(props) {
     super(props)
     this.addAddress = this.addAddress.bind(this)
-    this.openSettings = this.openSettings.bind(this)
+    this.openPreferences = this.openPreferences.bind(this)
     this.showDetails = this.showDetails.bind(this)
 
     this.navigation = this.props.screenProps.rootNavigation
@@ -50,8 +50,11 @@ export default class BottomNav extends React.Component {
       mainComponent: this.mainComponent
     })
   }
-  openSettings() {
+  openPreferences() {
     console.log('settings')
+    this.navigation.navigate('Preferences', {
+      mainComponent: this.mainComponent
+    })
   }
   showDetails() {
     console.log('details')
@@ -85,10 +88,10 @@ export default class BottomNav extends React.Component {
        </View>
         <View style={styles.bottomGrid}>
           <View style={styles.col}>
-            <TouchableHighlight key="confs" underlayColor='transparent' onPress={this.openSettings}>
+            <TouchableHighlight key="confs" underlayColor='transparent' onPress={this.openPreferences}>
               <Image style={styles.bottomBtn} source={settingsBtn}></Image>
             </TouchableHighlight>
-            <Text style={styles.font10}>Settings</Text>
+            <Text style={styles.font10}>Preferences</Text>
           </View>
         </View>
       </View>

@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Alert,
   AsyncStorage,
   StyleSheet,
   View,
@@ -12,11 +13,11 @@ import Welcome from './Welcome'
 import Footer from './Footer'
 import BottomNav from './BottomNav'
 import ActivityIndicatorLayer from './ActivityIndicatorLayer'
-import {STG_ADDRESSES, STG_STATE} from './lib/constants'
+import {STG_ADDRESSES, STG_STATE, CURRENCIES} from './lib/constants'
 import API from './lib/api'
 import {convertBalanceFromWei} from './lib/utils'
 import appStyles from './lib/styles'
-
+import getConversionRates from './lib/currency'
 const debounce = require('lodash.debounce')
 
 export default class Main extends React.Component {
@@ -35,7 +36,10 @@ export default class Main extends React.Component {
         ethusd: null,
         supply: null
       },
-      currency: 'USD',
+      preferences: {
+        currency: CURRENCIES.DEFAULT,
+      },
+      conversionRates: {},
       cached: false,
       date: null,
       loading: true
@@ -43,6 +47,9 @@ export default class Main extends React.Component {
     this.navigation = this.props.navigation
     this.getAccounts = this.getAccounts.bind(this)
     this.refresh =this.refresh.bind(this)
+    this.getPreferences = this.getPreferences.bind(this)
+    this.updateBackupState = this.updateBackupState.bind(this)
+    this.loadConversionRates = this.loadConversionRates.bind(this)
     this.fetchData = debounce(this.fetchData.bind(this), API.const.MIN_REQUEST_TIME, {
       'leading': true,
       'trailing': false
@@ -50,7 +57,83 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData()
+    this.setState({ loading: true })
+    Promise.all([ // TODO add test: have been called
+      this.getPreferences(),
+      this.loadConversionRates()
+    ])
+      .then(() => {
+        this.setState({ loading: false })
+      })
+      .catch((err) => {
+        console.log('getPreferences, loadConversionRates', err)
+        this.setState({ loading: false })
+        this.showAlert('Something went wrong', err)
+      })
+      .then(this.fetchData)
+  }
+
+  getPreferences() {
+    return AsyncStorage.getItem(STG_STATE)
+      .then((result) => result ? JSON.parse(result) : {})
+      .then(backupState => {
+        if (backupState.preferences) {
+          console.log('getPreferences ok')
+          this.setState((prevState) => {
+            return {
+              preferences: backupState.preferences
+            }
+          })
+        }
+      })
+  }
+
+  loadConversionRates() {
+    return AsyncStorage.getItem(STG_STATE)
+      .then((result) => result ? JSON.parse(result) : {})
+      .then(backupState => {
+        if (backupState.conversionRates && backupState.conversionRates.date) {
+          console.log('Backed conversionRates found', backupState.conversionRates)
+          const now = new Date()
+          const conversionsBackupDate = new Date(Date.parse(backupState.conversionRates.date))
+          console.log(`conversionsBackupDate : ${conversionsBackupDate}`)
+          // (Wait 2 days before update conversionRates)
+          conversionsBackupDate.setDate(conversionsBackupDate.getDate() + 2)
+          if (conversionsBackupDate >= now) { // load from Backup
+            this.setState((prevState) => ({ conversionRates: backupState.conversionRates }))
+            return Promise.resolve()
+          }
+        }
+        console.log('fetching and update conversionRates...')
+        return getConversionRates() // Update conversion rates
+          .then(response => response.json())
+          .then(data => {
+            if (data.rates) {
+              this.setState((prevState) => ({ conversionRates: data }))
+              this.updateBackupState('update backup conversionRates')
+            }
+          })
+          .catch((err) => {
+            // reset to USD
+            this.setState((prevState) => ({ currency:  CURRENCIES.DEFAULT }))
+          })
+      })
+  }
+
+  showAlert(msg, err) {
+    Alert.alert(
+      msg,
+      `Info: ${err}.`,
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      { cancelable: false }
+    )
+  }
+
+  updateBackupState(msg) {
+    console.log(msg, JSON.stringify(this.state))
+    return AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
   }
 
   fetchData() {
@@ -58,7 +141,8 @@ export default class Main extends React.Component {
     this.setState({
       loading: true
     })
-    Promise.all([API.getStats(), this.getAccounts()])
+      // Fetch server data
+      Promise.all([API.getStats(), this.getAccounts()])
       .then((responses) => {
         return Promise.all([responses[0].json(), responses[1].json()])
       })
@@ -84,8 +168,7 @@ export default class Main extends React.Component {
             ethusd: stats.ethusd
           }
         })
-        console.log('update backup (stats, accounts):', JSON.stringify(this.state))
-        AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
+        this.updateBackupState('update backup (stats, accounts):')
       })
       .then(API.getTotalSupply)
       .then((response) => response.json())
@@ -95,8 +178,7 @@ export default class Main extends React.Component {
             supply: convertBalanceFromWei(json.result)
           })
         }))
-        console.log('update backup (supply):', JSON.stringify(this.state))
-        AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
+        this.updateBackupState('update backup (supply):')
       })
       .catch(this.loadBackup.bind(this))
   }

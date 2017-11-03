@@ -5,12 +5,13 @@ import Main from './src/Main'
 import Welcome from './src/Welcome'
 import AddAddress from './src/AddAddress'
 import Details from './src/Details'
-
+import Preferences from './src/Preferences'
 
 const screens = {
   Home: { screen: Main },
   Add: { screen: AddAddress },
-  Details: { screen: Details }
+  Details: { screen: Details },
+  Preferences: { screen: Preferences}
 }
 // init router
 const Greenthereum = StackNavigator(screens)

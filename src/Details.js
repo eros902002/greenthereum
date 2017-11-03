@@ -14,6 +14,7 @@ import ActivityIndicatorLayer from './ActivityIndicatorLayer'
 import Warning from './Warning'
 import {
   convertBalanceFromWei,
+  convertUSDFromRate,
   formatCurrency,
   formatDate,
   formatNumber,
@@ -61,10 +62,11 @@ export default class Details extends React.Component {
     const { params } = this.rootNavigation.state
     this._isMounted = true // avoid: Can only update mounted components error
     this.mainComponent = params.mainComponent
+    const appState = this.mainComponent.state
     this.setState((prevState) => {
       return {
         account: params.account,
-        currency: this.mainComponent.currency
+        currency: appState && appState.preferences.currency
       }
     })
     this.getTransactions(params.account)
@@ -188,6 +190,9 @@ export default class Details extends React.Component {
       mainComponent: this.mainComponent
     }
     const account = this.state.account
+    const appState = this.mainComponent && this.mainComponent.state
+    const convertFromUSD = convertUSDFromRate(appState && appState.conversionRates.rates)
+    const amount = appState ? convertFromUSD(account.usd, this.state.currency) : 0
     const table = this.state.transactions.data.length ? (
       <View style={style.transactionsList}>
         <View style={style.row}>
@@ -238,7 +243,7 @@ export default class Details extends React.Component {
             </View>
             <View style={style.balanceColumn}>
               <Text selectable>
-                {formatCurrency(account.usd, this.state.currency)}
+                {formatCurrency(amount, this.state.currency)}
               </Text>
             </View>
           </View>

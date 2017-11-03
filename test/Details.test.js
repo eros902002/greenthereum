@@ -14,16 +14,17 @@ Object.defineProperty(Details.prototype, 'rootNavigation', {
     return {
       state: {
         params: {
-          account: {}
+          account: {},
+          mainComponent: {
+            state: {
+              preferences: {
+                currency: 'USD'
+              },
+              conversionRates: []
+            }
+          }
         }
       }
-    }
-  }
-})
-Object.defineProperty(Details.prototype, 'mainComponent', {
-  get: function() {
-    return {
-      currency: 'USD'
     }
   }
 })

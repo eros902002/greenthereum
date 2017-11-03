@@ -8,8 +8,10 @@ jest.mock('WebView', () => 'WebView')
 
 describe('Main', () => {
   it('should init the App\'s state', () => {
-    const mockFn = jest.fn()
-    Main.prototype.fetchData = mockFn // mock network calls
+    // mock network calls
+    Main.prototype.fetchData = jest.fn()
+    Main.prototype.getPreferences = jest.fn()
+    Main.prototype.loadConversionRates = jest.fn()
     const rendererInstance = renderer.create(<Main/>)
     const component = rendererInstance.getInstance()
     const actual = component.state
@@ -21,7 +23,10 @@ describe('Main', () => {
         ethusd: null,
         supply: null
       },
-      currency: 'USD',
+      preferences: {
+        currency: 'USD'
+      },
+      conversionRates: {},
       cached: false,
       date: null,
       loading: true
@@ -29,14 +34,25 @@ describe('Main', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('should call fetchData() on componentDidMount', () => {
+  it('should call loaders on componentDidMount', () => {
     const fetchDataMock = jest.fn()
-    Main.prototype.fetchData = fetchDataMock // mock network calls
+    const getPreferencesMock = jest.fn(() => Promise.resolve())
+    const loadConversionRatesMock = jest.fn(() => Promise.resolve())
+    Main.prototype.fetchData = fetchDataMock
+    Main.prototype.getPreferences = getPreferencesMock
+    Main.prototype.loadConversionRates = loadConversionRatesMock
     const rendererInstance = renderer.create(<Main/>)
+
+    expect(getPreferencesMock).toHaveBeenCalled()
+    expect(loadConversionRatesMock).toHaveBeenCalled()
     expect(fetchDataMock).toHaveBeenCalled()
 
     fetchDataMock.mockReset()
     fetchDataMock.mockRestore()
+    getPreferencesMock.mockReset()
+    getPreferencesMock.mockRestore()
+    loadConversionRatesMock.mockReset()
+    loadConversionRatesMock.mockRestore()
   })
 
   describe('fetchData', () => {

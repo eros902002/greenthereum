@@ -12,6 +12,7 @@ import {
 import API from './lib/api'
 import {
   formatCurrency,
+  convertUSDFromRate,
   formatNumber,
   formatDate,
   getShortAddress,
@@ -66,6 +67,9 @@ export default class List extends React.Component {
   }
 
   print({item}) {
+    const appState = this.mainComponent.state
+    const convertFromUSD = convertUSDFromRate(appState.conversionRates.rates)
+    const itemAmountConverted = convertFromUSD(item.usd, appState.preferences.currency)
     return (
       <TouchableHighlight underlayColor='transparent'
         onPress={this.openAddress.bind(this, item)}>
@@ -83,7 +87,7 @@ export default class List extends React.Component {
                 </View>
                 <View>
                   <Text>
-                    {formatCurrency(item.usd, this.mainComponent.state.currency)}
+                    {formatCurrency(itemAmountConverted, appState.preferences.currency)}
                   </Text>
                 </View>
               </View>

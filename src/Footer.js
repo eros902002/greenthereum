@@ -4,6 +4,7 @@ import Fetching from './Fetching'
 import appStyles from './lib/styles'
 import {formatCurrency, formatNumber} from './lib/utils'
 import API from './lib/api'
+import {convertUSDFromRate} from './lib/utils'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
@@ -37,18 +38,20 @@ export default class Footer extends React.Component {
   }
   onFooterPress() {
     console.log('Footer pressed')
-    Linking.openURL(API.URL.PRICE_HISTORICAL)
-      .catch(err => console.error('An error occurred', err))
+    // Linking.openURL(API.URL.PRICE_HISTORICAL)
+    //   .catch(err => console.error('An error occurred', err))
   }
   getFooter() {
     const mainState = this.props.screenProps.mainState
+    const convertFromUSD = convertUSDFromRate(mainState && mainState.conversionRates.rates)
+    const amount = mainState ? convertFromUSD(mainState.stats.ethusd, mainState.preferences.currency) : 0
     return (
       <TouchableHighlight underlayColor='transparent' onPress={this.onFooterPress.bind(this)}>
         <View style={style.center}>
          { mainState.stats.ethusd ? (
             <View>
              <Text style={style.footerText}>
-               1 Ether - {formatCurrency(mainState.stats.ethusd, mainState.currency)}
+               1 Ether - {formatCurrency(amount, mainState.preferences.currency)}
              </Text>
              <Text style={style.footerText}>
                1 Ether - {mainState.stats.ethbtc} BTC

@@ -39,8 +39,16 @@ function convertBalanceFromWei(wei) {
   return ethUnit.convert(wei, 'wei', 'ether').toString()
 }
 
+function convertUSDFromRate(rates) {
+  return (amount, code = 'EUR') => {
+    const rateConvertion = rates && rates[code] ? rates[code] : 1
+    return code === 'USD' ? amount : (amount * rateConvertion)
+  }
+}
+
 export {
   convertBalanceFromWei,
+  convertUSDFromRate,
   formatCurrency,
   formatDate,
   formatNumber,

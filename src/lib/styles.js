@@ -30,6 +30,10 @@ export default {
     flex: 1,
     backgroundColor: '#E8F5E9'// material green 50
   },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   headerStyle: {
     paddingTop: 20,
     paddingBottom: 20,

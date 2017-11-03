@@ -53,3 +53,28 @@ describe('formatNumber', function () {
     expect(actual).toEqual(expected)
   })
 })
+
+describe('convertUSDFromRate', function () {
+  it('should return a function', function () {
+    const actual = typeof utils.convertUSDFromRate({})
+    const expected = 'function'
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return the proper amount converted', function () {
+    const usdRates = {
+      'EUR' : 0.8
+    }
+    const convertFromUSD = utils.convertUSDFromRate(usdRates)
+    const actual = convertFromUSD(1, 'EUR')
+    const expected = 0.8
+    expect(actual).toEqual(expected)
+  })
+
+  it('should return the same amount if no rates', function () {
+    const convertFromUSD = utils.convertUSDFromRate()
+    const actual = convertFromUSD(5, 'EUR')
+    const expected = 5
+    expect(actual).toEqual(expected)
+  })
+})
