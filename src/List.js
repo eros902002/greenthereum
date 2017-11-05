@@ -11,13 +11,15 @@ import {
 } from 'react-native'
 import API from './lib/api'
 import {
-  formatCurrency,
   convertUSDFromRate,
   formatNumber,
   formatDate,
   getShortAddress,
+  processCurrency,
 } from './lib/utils'
 import appStyles from './lib/styles'
+import {CURRENCIES} from './lib/constants'
+
 const etherIcon = require('../assets/img/ico.png')
 
 export default class List extends React.Component {
@@ -49,12 +51,6 @@ export default class List extends React.Component {
     return (
       <View style={[appStyles.container, style.listContainer]}>
         <View style={style.listHeader}>
-          {
-            fromCache ?
-              <Text style={style.listHeaderTextCache}>
-                Connection error: Last update {stateDate}
-              </Text> : undefined
-          }
         </View>
         <ScrollView>
           <FlatList
@@ -69,7 +65,8 @@ export default class List extends React.Component {
   print({item}) {
     const appState = this.mainComponent.state
     const convertFromUSD = convertUSDFromRate(appState.conversionRates.rates)
-    const itemAmountConverted = convertFromUSD(item.usd, appState.preferences.currency)
+    // const itemAmountConverted = convertFromUSD(item.usd, appState.preferences.currency)
+    const amount = appState ? processCurrency(appState, item.usd) : item.usd
     return (
       <TouchableHighlight underlayColor='transparent'
         onPress={this.openAddress.bind(this, item)}>
@@ -86,9 +83,7 @@ export default class List extends React.Component {
                   <Text><Text style={style.bold}>{formatNumber(item.balance)}</Text> Ether</Text>
                 </View>
                 <View>
-                  <Text>
-                    {formatCurrency(itemAmountConverted, appState.preferences.currency)}
-                  </Text>
+                  <Text>{amount}</Text>
                 </View>
               </View>
             </View>

@@ -18,7 +18,8 @@ import {
   formatCurrency,
   formatDate,
   formatNumber,
-  getShortAddress
+  getShortAddress,
+  processCurrency
 } from './lib/utils'
 import API from './lib/api'
 import appStyles from './lib/styles'
@@ -191,8 +192,7 @@ export default class Details extends React.Component {
     }
     const account = this.state.account
     const appState = this.mainComponent && this.mainComponent.state
-    const convertFromUSD = convertUSDFromRate(appState && appState.conversionRates.rates)
-    const amount = appState ? convertFromUSD(account.usd, this.state.currency) : 0
+    const amount = appState ? processCurrency(appState, account.usd) : account.usd
     const table = this.state.transactions.data.length ? (
       <View style={style.transactionsList}>
         <View style={style.row}>
@@ -243,7 +243,7 @@ export default class Details extends React.Component {
             </View>
             <View style={style.balanceColumn}>
               <Text selectable>
-                {formatCurrency(amount, this.state.currency)}
+                {amount}
               </Text>
             </View>
           </View>

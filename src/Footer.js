@@ -2,9 +2,10 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-native'
 import Fetching from './Fetching'
 import appStyles from './lib/styles'
-import {formatCurrency, formatNumber} from './lib/utils'
+import {formatNumber, processCurrency} from './lib/utils'
 import API from './lib/api'
 import {convertUSDFromRate} from './lib/utils'
+import {CURRENCIES} from './lib/constants'
 
 const debounce = require('lodash.debounce')
 const style = StyleSheet.create({
@@ -44,14 +45,16 @@ export default class Footer extends React.Component {
   getFooter() {
     const mainState = this.props.screenProps.mainState
     const convertFromUSD = convertUSDFromRate(mainState && mainState.conversionRates.rates)
-    const amount = mainState ? convertFromUSD(mainState.stats.ethusd, mainState.preferences.currency) : 0
+    const amount = mainState ?
+      processCurrency(mainState, mainState.stats.ethusd) :
+      0
     return (
       <TouchableHighlight underlayColor='transparent' onPress={this.onFooterPress.bind(this)}>
         <View style={style.center}>
          { mainState.stats.ethusd ? (
             <View>
              <Text style={style.footerText}>
-               1 Ether - {formatCurrency(amount, mainState.preferences.currency)}
+               1 Ether - {amount}
              </Text>
              <Text style={style.footerText}>
                1 Ether - {mainState.stats.ethbtc} BTC

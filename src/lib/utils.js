@@ -46,6 +46,19 @@ function convertUSDFromRate(rates) {
   }
 }
 
+function processCurrency(appState, amount, defaultCurrency = 'USD') {
+  const rateDefined = appState && appState.conversionRates.rates
+  const userCurrency = appState.preferences.currency || defaultCurrency
+  if (rateDefined) {
+    const convertFromUSD = convertUSDFromRate(appState.conversionRates.rates)
+    return formatCurrency(
+      userCurrency !== 'USD' ? convertFromUSD(amount, userCurrency) : amount,
+      userCurrency
+    )
+  }
+  return formatCurrency(amount, defaultCurrency)
+}
+
 export {
   convertBalanceFromWei,
   convertUSDFromRate,
@@ -54,5 +67,6 @@ export {
   formatNumber,
   getCurrencySymbol,
   getShortAddress,
-  isEthereumAddress
+  isEthereumAddress,
+  processCurrency
 }

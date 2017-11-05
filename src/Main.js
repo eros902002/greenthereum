@@ -2,11 +2,12 @@ import React from 'react'
 import {
   Alert,
   AsyncStorage,
-  StyleSheet,
-  View,
-  TouchableHighlight,
+  FlatList,
   Image,
-  FlatList
+  NetInfo,
+  StyleSheet,
+  TouchableHighlight,
+  View
 } from 'react-native'
 import List from './List'
 import Welcome from './Welcome'
@@ -19,6 +20,7 @@ import {convertBalanceFromWei} from './lib/utils'
 import appStyles from './lib/styles'
 import getConversionRates from './lib/currency'
 const debounce = require('lodash.debounce')
+const offlineImg = require('../assets/img/offline.png')
 
 export default class Main extends React.Component {
   static navigationOptions = {
@@ -42,7 +44,8 @@ export default class Main extends React.Component {
       conversionRates: {},
       cached: false,
       date: null,
-      loading: true
+      loading: true,
+      isConnected: true
     }
     this.navigation = this.props.navigation
     this.getAccounts = this.getAccounts.bind(this)
@@ -50,25 +53,50 @@ export default class Main extends React.Component {
     this.getPreferences = this.getPreferences.bind(this)
     this.updateBackupState = this.updateBackupState.bind(this)
     this.loadConversionRates = this.loadConversionRates.bind(this)
+    this.handleConnectivityChange = this.handleConnectivityChange.bind(this)
+    this.loadApp = this.loadApp.bind(this)
     this.fetchData = debounce(this.fetchData.bind(this), API.const.MIN_REQUEST_TIME, {
       'leading': true,
       'trailing': false
+    })
+
+    NetInfo.isConnected.addEventListener(
+      'connectionChange',
+      this.handleConnectivityChange
+    )
+  }
+
+  handleConnectivityChange(isConnected) {
+    console.log('Change: User is ' + (isConnected ? 'online' : 'offline'))
+    this.setState((prevState) => {
+      return { isConnected: isConnected }
     })
   }
 
   componentDidMount() {
     this.setState({ loading: true })
-    Promise.all([ // TODO add test: have been called
+    NetInfo.isConnected.fetch().then(isConnected => {
+      console.log('User is ' + (isConnected ? 'online' : 'offline'))
+      this.setState((prevState) => {
+        return { isConnected: isConnected }
+      }, this.loadApp)
+    })
+  }
+
+  loadApp() {
+    Promise.all([
       this.getPreferences(),
       this.loadConversionRates()
     ])
+      .catch((err) => {
+        const title = `Error: Fetching App's data`
+        const msg =   `- Please ensure you are connected to the internet and restart the app.\n` +
+          `- If the error persists open an issue and attach this message.`
+        this.setState({ loading: false })
+        this.showAlert(title, msg, err)
+      })
       .then(() => {
         this.setState({ loading: false })
-      })
-      .catch((err) => {
-        console.log('getPreferences, loadConversionRates', err)
-        this.setState({ loading: false })
-        this.showAlert('Something went wrong', err)
       })
       .then(this.fetchData)
   }
@@ -86,6 +114,9 @@ export default class Main extends React.Component {
           })
         }
       })
+      .catch((err) => {
+        console.log('No preferences loaded', err)
+      })
   }
 
   loadConversionRates() {
@@ -94,36 +125,54 @@ export default class Main extends React.Component {
       .then(backupState => {
         if (backupState.conversionRates && backupState.conversionRates.date) {
           console.log('Backed conversionRates found', backupState.conversionRates)
+          // load from Backup
+          this.setState((prevState) => ({ conversionRates: backupState.conversionRates }))
           const now = new Date()
           const conversionsBackupDate = new Date(Date.parse(backupState.conversionRates.date))
           console.log(`conversionsBackupDate : ${conversionsBackupDate}`)
           // (Wait 2 days before update conversionRates)
           conversionsBackupDate.setDate(conversionsBackupDate.getDate() + 2)
-          if (conversionsBackupDate >= now) { // load from Backup
-            this.setState((prevState) => ({ conversionRates: backupState.conversionRates }))
+          if (conversionsBackupDate >= now) {
             return Promise.resolve()
           }
         }
-        console.log('fetching and update conversionRates...')
-        return getConversionRates() // Update conversion rates
-          .then(response => response.json())
-          .then(data => {
-            if (data.rates) {
-              this.setState((prevState) => ({ conversionRates: data }))
-              this.updateBackupState('update backup conversionRates')
-            }
-          })
-          .catch((err) => {
-            // reset to USD
-            this.setState((prevState) => ({ currency:  CURRENCIES.DEFAULT }))
-          })
+        if (this.state.isConnected) {
+          console.log('fetching and update conversionRates...')
+          return getConversionRates() // Update conversion rates
+            .then(response => response.json())
+            .then(data => {
+              if (data.rates) {
+                data.date = new Date() // Override date from the reponse (sometime gets stuck)
+                this.setState((prevState) => ({ conversionRates: data }))
+                this.updateBackupState('update backup conversionRates')
+              }
+            })
+            .catch((err) => {
+              // reset to USD
+              this.setState((prevState) => ({ loading: false }))
+              if (!this.state.conversionRates.rates) {
+                // Important: In this state the App is unable to convert currencies
+                this.showAlert(
+                  `Can't load any currency rates`,
+                  'All amounts will be shown in USD, try restart the App.',
+                  err)
+              } else {
+                this.showAlert('Error: Updating conversion rates', '', err)
+              }
+            })
+        }
+      })
+      .catch((err) => {
+        console.log('No backup state found', err)
       })
   }
 
-  showAlert(msg, err) {
+  showAlert(title, msg,  err) {
     Alert.alert(
-      msg,
-      `Info: ${err}.`,
+      title,
+      `${msg}\n\n` +
+      `Error info:\n` +
+      `${err}.`,
       [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
       ],
@@ -141,6 +190,7 @@ export default class Main extends React.Component {
     this.setState({
       loading: true
     })
+    if (this.state.isConnected) {
       // Fetch server data
       Promise.all([API.getStats(), this.getAccounts()])
       .then((responses) => {
@@ -178,9 +228,12 @@ export default class Main extends React.Component {
             supply: convertBalanceFromWei(json.result)
           })
         }))
-        this.updateBackupState('update backup (supply):')
+        this.updateBackupState('update backup (total supply):')
       })
       .catch(this.loadBackup.bind(this))
+    } else {
+      this.loadBackup('No internet connection found')
+    }
   }
 
   getAccounts() {
@@ -201,6 +254,7 @@ export default class Main extends React.Component {
       .then((backupState) => {
         console.log(`using backup state from ${backupState.date}`)
         backupState.loading = false
+        backupState.isConnected = false
         backupState.cached = true
         this.setState(backupState)
       })
@@ -231,12 +285,21 @@ export default class Main extends React.Component {
       mainState: this.state,
       mainComponent: this
     }
+    const offlineStyle = {
+      display: this.state.isConnected ? 'none': 'flex',
+      position: 'absolute',
+      top: 5,
+      right: 7,
+      zIndex: 10
+    }
     const content = !this.state.accounts.length ?
       <Welcome screenProps={screenProps}></Welcome> :
       <List screenProps={screenProps} date={this.state.date} items={this.state.accounts}></List>
-
     return (
       <View style={styles.container}>
+        <View style={offlineStyle}>
+          <Image source={offlineImg} style={styles.img}/>
+        </View>
         {
           this.state.loading ?
             <ActivityIndicatorLayer animating={true}></ActivityIndicatorLayer> :
@@ -250,5 +313,9 @@ export default class Main extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: appStyles.container
+  container: appStyles.container,
+  img: {
+    width: 32,
+    height: 32
+  }
 })
