@@ -84,21 +84,34 @@ export default class Main extends React.Component {
   }
 
   loadApp() {
-    Promise.all([
-      this.getPreferences(),
-      this.loadConversionRates()
-    ])
+    AsyncStorage.getItem(STG_ADDRESSES)
+      .then((result) => {
+        if (result) {
+          Promise.all([
+            this.getPreferences(),
+            this.loadConversionRates()
+          ])
+            .catch((err) => {
+              const title = `Error: Fetching App's data`
+              const msg =   `- Please ensure you are connected to the internet and restart the app.\n` +
+                `- If the error persists open an issue and attach this message.`
+              this.setState({ loading: false })
+              this.showAlert(title, msg, err)
+            })
+            .then(() => {
+              this.setState({ loading: false })
+            })
+            .then(this.fetchData)
+        } else {
+          console.log('No accounts found')
+          this.setState({ loading: false })
+        }
+      })
       .catch((err) => {
-        const title = `Error: Fetching App's data`
-        const msg =   `- Please ensure you are connected to the internet and restart the app.\n` +
-          `- If the error persists open an issue and attach this message.`
-        this.setState({ loading: false })
-        this.showAlert(title, msg, err)
-      })
-      .then(() => {
+        console.log(err)
         this.setState({ loading: false })
       })
-      .then(this.fetchData)
+
   }
 
   getPreferences() {
@@ -120,19 +133,20 @@ export default class Main extends React.Component {
   }
 
   loadConversionRates() {
+    console.log('loadConversionRates')
     return AsyncStorage.getItem(STG_STATE)
       .then((result) => result ? JSON.parse(result) : {})
       .then(backupState => {
         if (backupState.conversionRates && backupState.conversionRates.date) {
-          console.log('Backed conversionRates found', backupState.conversionRates)
+          console.log('Backed conversionRates found', JSON.stringify(backupState.conversionRates))
           // load from Backup
           this.setState((prevState) => ({ conversionRates: backupState.conversionRates }))
           const now = new Date()
           const conversionsBackupDate = new Date(Date.parse(backupState.conversionRates.date))
-          console.log(`conversionsBackupDate : ${conversionsBackupDate}`)
           // (Wait 2 days before update conversionRates)
           conversionsBackupDate.setDate(conversionsBackupDate.getDate() + 2)
           if (conversionsBackupDate >= now) {
+            console.log(`Using conversions backup from: ${conversionsBackupDate}`)
             return Promise.resolve()
           }
         }
@@ -182,7 +196,12 @@ export default class Main extends React.Component {
 
   updateBackupState(msg) {
     console.log(msg, JSON.stringify(this.state))
-    return AsyncStorage.setItem(STG_STATE, JSON.stringify(this.state))
+    const backup = Object.assign({}, this.state)
+    // this can't be saved or lead to wrong behaviuors
+    delete backup.isConnected
+    delete backup.loading
+
+    return AsyncStorage.setItem(STG_STATE, JSON.stringify(backup))
   }
 
   fetchData() {
@@ -305,7 +324,12 @@ export default class Main extends React.Component {
             <ActivityIndicatorLayer animating={true}></ActivityIndicatorLayer> :
             content
         }
-        <Footer screenProps={screenProps}></Footer>
+        {
+          this.state.stats.ethusd ?
+            <Footer screenProps={screenProps}></Footer> :
+            null
+        }
+
         <BottomNav screenProps={screenProps}></BottomNav>
       </View>
     )

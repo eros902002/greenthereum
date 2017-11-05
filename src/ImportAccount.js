@@ -56,6 +56,17 @@ export default class ImportAccount extends React.Component {
         })
         .then(() => {
           console.log('address updated')
+          // refresh main State even offline
+          this.mainComponent.setState((prevState) => {
+            const newAccount = {
+              key: newAddress,
+              balance: 0,
+              usd: 0
+            }
+            return {
+              accounts: prevState.accounts.concat([newAccount])
+            }
+          })
           this.mainComponent.refresh()
           this.navigation.goBack()
         })
