@@ -77,4 +77,48 @@ describe('convertUSDFromRate', function () {
     const expected = 5
     expect(actual).toEqual(expected)
   })
+
+  describe('processCurrency', function () {
+    it('should use user preferences from state', function () {
+      const mainState = {
+        conversionRates: {
+          rates: {
+             "AUD": 1.3026,
+             "CHF": 0.99811,
+             "EUR": 0.85785
+          }
+        },
+        preferences: {
+          currency: 'EUR'
+        }
+      }
+      const actual = utils.processCurrency(mainState, 1)
+      const expected = '0,86 €'
+      expect(actual).toEqual(expected)
+    })
+
+    it('should fallback to default currency(USD) if no rates are defined', function () {
+      const mainState = {
+        conversionRates: {},
+        preferences: {
+          currency: 'EUR'
+        }
+      }
+      const actual = utils.processCurrency(mainState, 1)
+      const expected = '$1.00'
+      expect(actual).toEqual(expected)
+    })
+
+    it('should fallback to default currency(USD) if no rates are defined', function () {
+      const mainState = {
+        conversionRates: {},
+        preferences: {
+          currency: 'EUR'
+        }
+      }
+      const actual = utils.processCurrency(mainState, 1)
+      const expected = '$1.00'
+      expect(actual).toEqual(expected)
+    })
+  })
 })
